@@ -1,7 +1,7 @@
 import pygame
 from config import *
 from Tile import *
-from Player import Player
+from player.Player import Player
 from random import choice
 
 class Level:
