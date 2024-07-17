@@ -16,14 +16,22 @@ func InitializeEntities() []*entities.Entity {
 		log.Fatal(err)
 	}
 
-	// Create player with position and velocity
-	player := entities.NewPlayer(100, 100, 2, 1, playerSprite)
+	npcSprite, _, err := ebitenutil.NewImageFromFile("assets/images/eggBoy.png")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// Return the list containing the single player entity
-	return []*entities.Entity{player}
+	// Create entities
+	npc1 := entities.NewNPC(50, 50, 0, 0, npcSprite)
+	npc2 := entities.NewNPC(200, 100, 0, 0, npcSprite)
+
+	player := entities.NewPlayer(0, 0, 0, 0, playerSprite)
+
+	// Return the list containing all entities
+	return []*entities.Entity{player, npc1, npc2}
 }
 
 // InitializeSystems creates and initializes systems
-func InitializeSystems() (*systems.MovementSystem, *systems.DrawSystem, *systems.CollisionSystem, *systems.UserInputSystem) {
-	return &systems.MovementSystem{}, &systems.DrawSystem{}, &systems.CollisionSystem{}, &systems.UserInputSystem{}
+func InitializeSystems() (*systems.MovementSystem, *systems.DrawSystem, *systems.UserInputSystem) {
+	return &systems.MovementSystem{}, &systems.DrawSystem{}, &systems.UserInputSystem{}
 }

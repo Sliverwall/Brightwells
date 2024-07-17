@@ -18,13 +18,11 @@ type Game struct {
 	entities        []*entities.Entity
 	movementSystem  *systems.MovementSystem
 	drawSystem      *systems.DrawSystem
-	collisionSystem *systems.CollisionSystem
 	userInputSystem *systems.UserInputSystem
 }
 
 func (g *Game) Update() error {
 	g.movementSystem.Update(g.entities)
-	g.collisionSystem.Update(g.entities)
 	g.userInputSystem.Update(g.entities)
 	return nil
 }
@@ -42,7 +40,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func main() {
 	entities := initialize.InitializeEntities()
-	movementSystem, drawSystem, _, userInputSystem := initialize.InitializeSystems()
+	movementSystem, drawSystem, userInputSystem := initialize.InitializeSystems()
 
 	game := &Game{
 		entities:        entities,

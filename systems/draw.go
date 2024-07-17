@@ -4,7 +4,6 @@ import (
 	"Brightwells/components"
 	"Brightwells/entities"
 	"image"
-	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -12,9 +11,6 @@ import (
 type DrawSystem struct{}
 
 func (ds *DrawSystem) Update(entities []*entities.Entity, screen *ebiten.Image) {
-	// draw the screen outside the entity loop
-	screen.Fill(color.Black)
-
 	for _, entity := range entities {
 		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.SpriteComponentID) {
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
