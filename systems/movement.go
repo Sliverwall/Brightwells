@@ -29,8 +29,8 @@ func (ms *MovementSystem) Update(entities []*entities.Entity) {
 				position.Y = oldY
 
 				// Optionally adjust velocity or perform other collision response actions
-				velocity.VX = 0
-				velocity.VY = 0
+				velocity.VX = -velocity.VX
+				velocity.VY = -velocity.VY
 			}
 		}
 	}

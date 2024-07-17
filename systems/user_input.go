@@ -12,9 +12,7 @@ type UserInputSystem struct{}
 func (uis *UserInputSystem) Update(entities []*entities.Entity) {
 	for _, entity := range entities {
 		// Checks for players that have position and velocity
-		if entity.HasComponent(components.PlayerComponentID) &&
-			entity.HasComponent(components.PositionComponentID) &&
-			entity.HasComponent(components.VelocityComponentID) {
+		if entity.HasComponent(components.PlayerComponentID) {
 			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
 
 			if ebiten.IsKeyPressed(ebiten.KeyUp) {
