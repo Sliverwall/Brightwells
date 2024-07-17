@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Brightwells/config"
 	"Brightwells/entities"
 	"Brightwells/initialize"
 	"Brightwells/systems"
@@ -9,12 +10,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const (
-	HEIGHT int = 240
-	WIDTH  int = 320
-)
-
 type Game struct {
+	// game ECS init
 	entities        []*entities.Entity
 	movementSystem  *systems.MovementSystem
 	drawSystem      *systems.DrawSystem
@@ -35,10 +32,15 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return WIDTH, HEIGHT
+	windowWidth := config.WindowSize.Width
+	windowHight := config.WindowSize.Height
+	return windowWidth, windowHight
 }
 
 func main() {
+
+	windowWidth := config.WindowSize.Width
+	windowHight := config.WindowSize.Height
 	entities := initialize.InitializeEntities()
 	movementSystem, drawSystem, userInputSystem := initialize.InitializeSystems()
 
@@ -48,7 +50,7 @@ func main() {
 		drawSystem:      drawSystem,
 		userInputSystem: userInputSystem,
 	}
-	ebiten.SetWindowSize(640, 480)
+	ebiten.SetWindowSize(windowWidth, windowHight)
 	ebiten.SetWindowTitle("Green Square Moving Back and Forth")
 	if err := ebiten.RunGame(game); err != nil {
 		panic(err)

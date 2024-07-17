@@ -2,14 +2,19 @@ package systems
 
 import (
 	"Brightwells/components"
+	"Brightwells/config"
 	"Brightwells/entities"
 )
 
-type CollisionSystem struct{}
+type CollisionSystem struct {
+}
 
 func (cs *CollisionSystem) Update(entities []*entities.Entity) bool {
-	playerCollisionDetected := false
+	// Grab screen dims from config
+	windowWidth := config.WindowSize.Width
+	windowHight := config.WindowSize.Height
 
+	playerCollisionDetected := false
 	// Loop through all entities to check for collisions with the player
 	for _, entity := range entities {
 		if entity.HasComponent(components.CollisionComponentID) && entity.HasComponent(components.PositionComponentID) {
@@ -20,16 +25,16 @@ func (cs *CollisionSystem) Update(entities []*entities.Entity) bool {
 			if position.X < 0 {
 				position.X = 0
 				playerCollisionDetected = true
-			} else if position.X+collision.Width > 320 {
-				position.X = 320 - collision.Width
+			} else if position.X+collision.Width > float64(windowWidth) {
+				position.X = float64(windowHight) - collision.Width
 				playerCollisionDetected = true
 			}
 
 			if position.Y < 0 {
 				position.Y = 0
 				playerCollisionDetected = true
-			} else if position.Y+collision.Height > 240 {
-				position.Y = 240 - collision.Height
+			} else if position.Y+collision.Height > float64(windowHight) {
+				position.Y = float64(windowWidth) - collision.Height
 				playerCollisionDetected = true
 			}
 

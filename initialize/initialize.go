@@ -9,6 +9,7 @@ import (
 )
 
 // InitializeEntities creates and initializes entities with their components
+// Eventually get this fitted into a CSV or json file
 func InitializeEntities() []*entities.Entity {
 	// Load player sprite
 	playerSprite, _, err := ebitenutil.NewImageFromFile("assets/images/eggBoy.png")

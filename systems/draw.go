@@ -18,7 +18,7 @@ func (ds *DrawSystem) Update(entities []*entities.Entity, screen *ebiten.Image) 
 
 			// set the translation of the drawImage
 			opts := ebiten.DrawImageOptions{}
-			opts.GeoM.Translate(float64(position.X), float64(position.Y))
+			opts.GeoM.Translate(position.X, position.Y)
 
 			screen.DrawImage(
 				sprite.Image.SubImage(
