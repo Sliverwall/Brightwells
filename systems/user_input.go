@@ -9,8 +9,8 @@ import (
 
 type UserInputSystem struct{}
 
-func (uis *UserInputSystem) Update(entities []*entities.Entity) {
-	for _, entity := range entities {
+func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
+	for _, entity := range entitySlice {
 		// Checks for players that have position and velocity
 		if entity.HasComponent(components.PlayerComponentID) {
 			sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)

@@ -36,11 +36,11 @@ func (cs *CollisionSystem) CheckBoundaryCollision(entity *entities.Entity) bool 
 	return false
 }
 
-func (cs *CollisionSystem) CheckEntityCollisions(entities []*entities.Entity) map[int][]int {
+func (cs *CollisionSystem) Update(entitySlice []*entities.Entity) map[int][]int {
 	collisions := make(map[int][]int)
-	for i, entity1 := range entities {
+	for i, entity1 := range entitySlice {
 		if entity1.HasComponent(components.CollisionComponentID) && entity1.HasComponent(components.PositionComponentID) {
-			for j, entity2 := range entities {
+			for j, entity2 := range entitySlice {
 				if i != j && entity2.HasComponent(components.CollisionComponentID) && entity2.HasComponent(components.PositionComponentID) {
 					if cs.CheckEntityCollision(entity1, entity2) {
 						if _, ok := collisions[entity1.ID]; !ok {

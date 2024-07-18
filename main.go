@@ -12,17 +12,22 @@ import (
 
 type Game struct {
 	// game ECS init
-	entities          []*entities.Entity
-	movementSystem    *systems.MovementSystem
-	drawSystem        *systems.DrawSystem
-	userInputSystem   *systems.UserInputSystem
-	foodRespawnSystem *systems.FoodRespawnSystem
+	entitySlice            []*entities.Entity
+	collisionSystem        *systems.CollisionSystem
+	triggerCollisionSystem *systems.TriggerCollisionSystem
+
+	movementSystem  *systems.MovementSystem
+	drawSystem      *systems.DrawSystem
+	userInputSystem *systems.UserInputSystem
 }
 
 func (g *Game) Update() error {
-	g.foodRespawnSystem.Update(g.entities)
-	g.movementSystem.Update(g.entities)
-	g.userInputSystem.Update(g.entities)
+
+	collisions := g.collisionSystem.Update(g.entitySlice)
+	g.triggerCollisionSystem.Update(g.entitySlice, collisions)
+
+	g.movementSystem.Update(g.entitySlice)
+	g.userInputSystem.Update(g.entitySlice)
 	return nil
 }
 
@@ -30,7 +35,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// Clear the screen with black color
 	screen.Fill(color.Black)
 	// Draw the entities using the draw system
-	g.drawSystem.Update(g.entities, screen)
+	g.drawSystem.Update(g.entitySlice, screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -43,20 +48,23 @@ func main() {
 
 	windowWidth := config.WindowSize.Width
 	windowHight := config.WindowSize.Height
-	entities := initialize.InitializeEntities()
+	entitySlice := initialize.InitializeEntities()
 
 	// Init systems
+	collisionSystem := &systems.CollisionSystem{}
+	triggerCollisionSystem := &systems.TriggerCollisionSystem{}
+
 	movementSystem := &systems.MovementSystem{}
 	drawSystem := &systems.DrawSystem{}
 	userInputSystem := &systems.UserInputSystem{}
-	foodRespawnSystem := &systems.FoodRespawnSystem{}
 
 	game := &Game{
-		entities:          entities,
-		movementSystem:    movementSystem,
-		drawSystem:        drawSystem,
-		userInputSystem:   userInputSystem,
-		foodRespawnSystem: foodRespawnSystem,
+		entitySlice:            entitySlice,
+		triggerCollisionSystem: triggerCollisionSystem,
+		collisionSystem:        collisionSystem,
+		movementSystem:         movementSystem,
+		drawSystem:             drawSystem,
+		userInputSystem:        userInputSystem,
 	}
 	ebiten.SetWindowSize(windowWidth, windowHight)
 	ebiten.SetWindowTitle("Green Square Moving Back and Forth")

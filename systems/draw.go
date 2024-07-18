@@ -10,8 +10,8 @@ import (
 
 type DrawSystem struct{}
 
-func (ds *DrawSystem) Update(entities []*entities.Entity, screen *ebiten.Image) {
-	for _, entity := range entities {
+func (ds *DrawSystem) Update(entitySlice []*entities.Entity, screen *ebiten.Image) {
+	for _, entity := range entitySlice {
 		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.SpriteComponentID) {
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 			sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)

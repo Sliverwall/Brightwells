@@ -33,5 +33,6 @@ func (ms *MovementSystem) Update(entities []*entities.Entity) {
 				velocity.VY = -velocity.VY
 			}
 		}
+
 	}
 }
