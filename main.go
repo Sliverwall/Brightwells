@@ -12,13 +12,15 @@ import (
 
 type Game struct {
 	// game ECS init
-	entities        []*entities.Entity
-	movementSystem  *systems.MovementSystem
-	drawSystem      *systems.DrawSystem
-	userInputSystem *systems.UserInputSystem
+	entities          []*entities.Entity
+	movementSystem    *systems.MovementSystem
+	drawSystem        *systems.DrawSystem
+	userInputSystem   *systems.UserInputSystem
+	foodRespawnSystem *systems.FoodRespawnSystem
 }
 
 func (g *Game) Update() error {
+	g.foodRespawnSystem.Update(g.entities)
 	g.movementSystem.Update(g.entities)
 	g.userInputSystem.Update(g.entities)
 	return nil
@@ -42,13 +44,19 @@ func main() {
 	windowWidth := config.WindowSize.Width
 	windowHight := config.WindowSize.Height
 	entities := initialize.InitializeEntities()
-	movementSystem, drawSystem, userInputSystem := initialize.InitializeSystems()
+
+	// Init systems
+	movementSystem := &systems.MovementSystem{}
+	drawSystem := &systems.DrawSystem{}
+	userInputSystem := &systems.UserInputSystem{}
+	foodRespawnSystem := &systems.FoodRespawnSystem{}
 
 	game := &Game{
-		entities:        entities,
-		movementSystem:  movementSystem,
-		drawSystem:      drawSystem,
-		userInputSystem: userInputSystem,
+		entities:          entities,
+		movementSystem:    movementSystem,
+		drawSystem:        drawSystem,
+		userInputSystem:   userInputSystem,
+		foodRespawnSystem: foodRespawnSystem,
 	}
 	ebiten.SetWindowSize(windowWidth, windowHight)
 	ebiten.SetWindowTitle("Green Square Moving Back and Forth")

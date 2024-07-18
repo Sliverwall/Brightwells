@@ -23,7 +23,7 @@ func (ms *MovementSystem) Update(entities []*entities.Entity) {
 			position.Y += velocity.VY
 
 			// Check for collisions using the collision system
-			if ms.collisionSystem.Update(entities) {
+			if ms.collisionSystem.CheckBoundaryCollision(entity) {
 				// If collision detected, rollback to previous position
 				position.X = oldX
 				position.Y = oldY

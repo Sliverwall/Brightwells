@@ -6,7 +6,7 @@ var (
 		Width  int
 		Height int
 	}{
-		Width:  640,
-		Height: 480,
+		Width:  300,
+		Height: 300,
 	}
 )
