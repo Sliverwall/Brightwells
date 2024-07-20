@@ -42,8 +42,13 @@ func (cs *CollisionSystem) CheckTileCollisions(entitySlice []*entities.Entity) m
 
 // isOverlapping checks if two bounding boxes overlap
 func (cs *CollisionSystem) isOverlapping(box1, box2 *components.CollisionBox) bool {
-	return !(box1.PositionComponent.X > box2.PositionComponent.X+box2.CollisionComponent.Width ||
-		box1.PositionComponent.X+box1.CollisionComponent.Width < box2.PositionComponent.X ||
-		box1.PositionComponent.Y > box2.PositionComponent.Y+box2.CollisionComponent.Height ||
-		box1.PositionComponent.Y+box1.CollisionComponent.Height < box2.PositionComponent.Y)
+	// Calculate the bounding boxes for each collision box
+	x1, y1, x2, y2 := box1.BoundingBox()
+	ox1, oy1, ox2, oy2 := box2.BoundingBox()
+
+	// Check if the boxes overlap
+	return !(x1 > ox2 ||
+		x2 < ox1 ||
+		y1 > oy2 ||
+		y2 < oy1)
 }

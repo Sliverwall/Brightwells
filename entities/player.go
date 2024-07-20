@@ -18,7 +18,7 @@ func NewPlayer(posX, posY, velX, velY float64, sprite *ebiten.Image, layer int) 
 	})
 	entity.AddComponent(components.CollisionComponentID, &components.CollisionComponent{
 		Width:  16,
-		Height: 16,
+		Height: 8,
 	})
 	entity.AddComponent(components.CollisionBoxID, &components.CollisionBox{
 		PositionComponent:  entity.GetComponent(components.PositionComponentID).(*components.PositionComponent),
