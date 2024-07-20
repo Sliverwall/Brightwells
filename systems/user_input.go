@@ -17,28 +17,27 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
 
 			// Control movement
+			speed := 64.0 // Speed is the size of one tile
+
+			// Reset velocity
+			velocity.VX = 0
+			velocity.VY = 0
+
 			if ebiten.IsKeyPressed(ebiten.KeyUp) {
-				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 16, 16, 32, 32
-				velocity.VY = -2
+				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 16, 16, 16, 16
+				velocity.VY = -speed
 			} else if ebiten.IsKeyPressed(ebiten.KeyDown) {
 				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 0, 0, 16, 16
-				velocity.VY = 2
-			} else {
-				velocity.VY = 0
+				velocity.VY = speed
 			}
 
 			if ebiten.IsKeyPressed(ebiten.KeyLeft) && !ebiten.IsKeyPressed(ebiten.KeyUp) && !ebiten.IsKeyPressed(ebiten.KeyDown) {
-				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 32, 32, 48, 48
-				velocity.VX = -2
+				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 32, 32, 16, 16
+				velocity.VX = -speed
 			} else if ebiten.IsKeyPressed(ebiten.KeyRight) && !ebiten.IsKeyPressed(ebiten.KeyUp) && !ebiten.IsKeyPressed(ebiten.KeyDown) {
-				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 48, 48, 64, 64
-				velocity.VX = 2
-			} else {
-				velocity.VX = 0
+				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 48, 48, 16, 16
+				velocity.VX = speed
 			}
-
-			// Switch Sprites
-
 		}
 	}
 }

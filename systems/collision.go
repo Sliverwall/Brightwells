@@ -2,67 +2,48 @@ package systems
 
 import (
 	"Brightwells/components"
-	"Brightwells/config"
 	"Brightwells/entities"
 )
 
-type CollisionSystem struct{}
-
-func (cs *CollisionSystem) CheckBoundaryCollision(entity *entities.Entity) bool {
-	windowWidth := config.WindowSize.Width
-	windowHeight := config.WindowSize.Height
-
-	if entity.HasComponent(components.CollisionComponentID) && entity.HasComponent(components.PositionComponentID) {
-		collision := entity.GetComponent(components.CollisionComponentID).(*components.CollisionComponent)
-		position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-
-		// Check collision with screen edges
-		if position.X < 0 {
-			position.X = 0
-			return true
-		} else if position.X+collision.Width > float64(windowWidth) {
-			position.X = float64(windowWidth) - collision.Width
-			return true
-		}
-
-		if position.Y < 0 {
-			position.Y = 0
-			return true
-		} else if position.Y+collision.Height > float64(windowHeight) {
-			position.Y = float64(windowHeight) - collision.Height
-			return true
-		}
-	}
-	return false
+type CollisionSystem struct {
+	GameMap [][]int
 }
 
-func (cs *CollisionSystem) Update(entitySlice []*entities.Entity) map[int][]int {
+// CheckTileCollisions processes all entities and returns a map of collisions
+func (cs *CollisionSystem) CheckTileCollisions(entitySlice []*entities.Entity) map[int][]int {
 	collisions := make(map[int][]int)
-	for i, entity1 := range entitySlice {
-		if entity1.HasComponent(components.CollisionComponentID) && entity1.HasComponent(components.PositionComponentID) {
-			for j, entity2 := range entitySlice {
-				if i != j && entity2.HasComponent(components.CollisionComponentID) && entity2.HasComponent(components.PositionComponentID) {
-					if cs.CheckEntityCollision(entity1, entity2) {
-						if _, ok := collisions[entity1.ID]; !ok {
-							collisions[entity1.ID] = []int{}
-						}
-						collisions[entity1.ID] = append(collisions[entity1.ID], entity2.ID)
-					}
-				}
+
+	for _, entity := range entitySlice {
+		if !entity.HasComponent(components.CollisionComponentID) || !entity.HasComponent(components.PositionComponentID) {
+			continue
+		}
+
+		box1 := entity.GetComponent(components.CollisionBoxID).(*components.CollisionBox)
+
+		for _, otherEntity := range entitySlice {
+			if entity.ID == otherEntity.ID {
+				continue
+			}
+
+			if !otherEntity.HasComponent(components.CollisionComponentID) || !otherEntity.HasComponent(components.PositionComponentID) {
+				continue
+			}
+
+			box2 := otherEntity.GetComponent(components.CollisionBoxID).(*components.CollisionBox)
+
+			if cs.isOverlapping(box1, box2) {
+				collisions[entity.ID] = append(collisions[entity.ID], otherEntity.ID)
 			}
 		}
 	}
+
 	return collisions
 }
 
-func (cs *CollisionSystem) CheckEntityCollision(entity1, entity2 *entities.Entity) bool {
-	coll1 := entity1.GetComponent(components.CollisionComponentID).(*components.CollisionComponent)
-	pos1 := entity1.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-	coll2 := entity2.GetComponent(components.CollisionComponentID).(*components.CollisionComponent)
-	pos2 := entity2.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-
-	return pos1.X < pos2.X+coll2.Width &&
-		pos1.X+coll1.Width > pos2.X &&
-		pos1.Y < pos2.Y+coll2.Height &&
-		pos1.Y+coll1.Height > pos2.Y
+// isOverlapping checks if two bounding boxes overlap
+func (cs *CollisionSystem) isOverlapping(box1, box2 *components.CollisionBox) bool {
+	return !(box1.PositionComponent.X > box2.PositionComponent.X+box2.CollisionComponent.Width ||
+		box1.PositionComponent.X+box1.CollisionComponent.Width < box2.PositionComponent.X ||
+		box1.PositionComponent.Y > box2.PositionComponent.Y+box2.CollisionComponent.Height ||
+		box1.PositionComponent.Y+box1.CollisionComponent.Height < box2.PositionComponent.Y)
 }

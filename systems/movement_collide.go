@@ -6,29 +6,48 @@ import (
 )
 
 type MoveCollideSystem struct {
+	originalPositions map[int]components.PositionComponent
 }
 
-func (mcs *MoveCollideSystem) Update(entitySlice []*entities.Entity, entity *entities.Entity, collidingEntityIDs []int) {
+// NewMoveCollideSystem initializes a MoveCollideSystem with a map to store original positions.
+func NewMoveCollideSystem() *MoveCollideSystem {
+	return &MoveCollideSystem{
+		originalPositions: make(map[int]components.PositionComponent),
+	}
+}
 
-	// Handle other entity collisions (e.g., movement rollback)
-	if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.VelocityComponentID) {
+// SaveOriginalPosition stores the original position of an entity before movement.
+func (mcs *MoveCollideSystem) SaveOriginalPosition(entity *entities.Entity) {
+	if entity.HasComponent(components.PositionComponentID) {
 		position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-		velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
+		mcs.originalPositions[entity.ID] = *position
+	}
+}
 
-		// Save current position for potential rollback
-		oldX, oldY := position.X, position.Y
+// RevertPosition restores the position of an entity to its original position.
+func (mcs *MoveCollideSystem) RevertPosition(entity *entities.Entity) {
+	if originalPos, ok := mcs.originalPositions[entity.ID]; ok {
+		if position := entity.GetComponent(components.PositionComponentID); position != nil {
+			*position.(*components.PositionComponent) = originalPos
+		}
+	}
+}
 
-		// Process the collisions
-		for _, collidingEntityID := range collidingEntityIDs {
-			collidingEntity := entities.GetEntityByID(entitySlice, collidingEntityID)
-			if collidingEntity.HasComponent(components.CollisionComponentID) {
-				// Rollback to previous position if collision detected
-				position.X = oldX
-				position.Y = oldY
-				velocity.VX = -velocity.VX
-				velocity.VY = -velocity.VY
+// HandleCollisions processes collision results and reverts positions as necessary.
+func (mcs *MoveCollideSystem) HandleCollisions(entitySlice []*entities.Entity, collisions map[int][]int) {
+	for entityID, collidingEntities := range collisions {
+		entity := entities.GetEntityByID(entitySlice, entityID)
+		if entity != nil {
+			// Revert the position of the current entity
+			mcs.RevertPosition(entity)
+		}
+
+		for _, collidingID := range collidingEntities {
+			collidingEntity := entities.GetEntityByID(entitySlice, collidingID)
+			if collidingEntity != nil {
+				// Revert the position of the colliding entity
+				mcs.RevertPosition(collidingEntity)
 			}
 		}
 	}
-
 }

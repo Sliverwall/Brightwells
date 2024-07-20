@@ -6,7 +6,17 @@ var (
 		Width  int
 		Height int
 	}{
-		Width:  300,
-		Height: 300,
+		Width:  600,
+		Height: 600,
 	}
+
+	ResolutionSize = struct {
+		Width  int
+		Height int
+	}{
+		Width:  190,
+		Height: 120,
+	}
+
+	TileSize float64 = 16
 )

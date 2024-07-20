@@ -3,36 +3,36 @@ package systems
 import (
 	"Brightwells/components"
 	"Brightwells/entities"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type MovementSystem struct {
-	collisionSystem *CollisionSystem
+	MoveCollideSystem *MoveCollideSystem
 }
 
-func (ms *MovementSystem) Update(entities []*entities.Entity) {
-	for _, entity := range entities {
+func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
+
+	var fps float64
+	if ebiten.ActualFPS() == 0 {
+		fps = 60.0
+	} else {
+		fps = ebiten.ActualFPS()
+	}
+	dt := 1.0 / fps // Assume 60 FPS for movement calculations; adjust as needed
+
+	for _, entity := range entitySlice {
 		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.VelocityComponentID) {
+			// Save the original position before moving
+			ms.MoveCollideSystem.SaveOriginalPosition(entity)
+
+			// Update position based on velocity
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
 
-			// Save current position for potential rollback
-			oldX, oldY := position.X, position.Y
-
-			// Update position based on velocity
-			position.X += velocity.VX
-			position.Y += velocity.VY
-
-			// Check for collisions using the collision system
-			if ms.collisionSystem.CheckBoundaryCollision(entity) {
-				// If collision detected, rollback to previous position
-				position.X = oldX
-				position.Y = oldY
-
-				// Optionally adjust velocity or perform other collision response actions
-				velocity.VX = -velocity.VX
-				velocity.VY = -velocity.VY
-			}
+			// Calculate movement for this frame
+			position.X += velocity.VX * dt
+			position.Y += velocity.VY * dt
 		}
-
 	}
 }

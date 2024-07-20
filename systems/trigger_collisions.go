@@ -5,20 +5,18 @@ import (
 )
 
 type TriggerCollisionSystem struct {
-	foodRespawnSystem *FoodRespawnSystem
-	moveCollideSystem *MoveCollideSystem
+	FoodRespawnSystem *FoodRespawnSystem
+	MoveCollideSystem *MoveCollideSystem
+	CollisionSystem   *CollisionSystem
 }
 
-// Update processes all collision events
-func (tcs *TriggerCollisionSystem) Update(entitySlice []*entities.Entity, collisions map[int][]int) {
-	for entityID, collidingEntityIDs := range collisions {
-		entity := entities.GetEntityByID(entitySlice, entityID)
+func (tcs *TriggerCollisionSystem) Update(entitySlice []*entities.Entity) {
+	// Update entitySlice if needed
+	collisions := tcs.CollisionSystem.CheckTileCollisions(entitySlice)
 
-		// // Specific trigger: Food respawn
-		// tcs.foodRespawnSystem.Update(entity)
+	// Handle other triggers if needed
+	tcs.FoodRespawnSystem.FoodCollide(entitySlice, collisions)
 
-		// Handle other entity collisions (e.g., movement rollback)
-		tcs.moveCollideSystem.Update(entitySlice, entity, collidingEntityIDs)
-
-	}
+	// Handle tile collisions
+	tcs.MoveCollideSystem.HandleCollisions(entitySlice, collisions)
 }

@@ -3,7 +3,6 @@ package main
 import (
 	"Brightwells/config"
 	"Brightwells/entities"
-	"Brightwells/initialize"
 	"Brightwells/systems"
 	"image/color"
 
@@ -12,7 +11,8 @@ import (
 
 type Game struct {
 	// game ECS init
-	entitySlice            []*entities.Entity
+	entitySlice []*entities.Entity
+
 	collisionSystem        *systems.CollisionSystem
 	triggerCollisionSystem *systems.TriggerCollisionSystem
 
@@ -23,8 +23,9 @@ type Game struct {
 
 func (g *Game) Update() error {
 
-	collisions := g.collisionSystem.Update(g.entitySlice)
-	g.triggerCollisionSystem.Update(g.entitySlice, collisions)
+	// update existing entities
+	g.entitySlice = entities.GetExistEntitySlice(g.entitySlice)
+	g.triggerCollisionSystem.Update(g.entitySlice)
 
 	g.movementSystem.Update(g.entitySlice)
 	g.userInputSystem.Update(g.entitySlice)
@@ -38,23 +39,54 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	g.drawSystem.Update(g.entitySlice, screen)
 }
 
-func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	windowWidth := config.WindowSize.Width
-	windowHight := config.WindowSize.Height
-	return windowWidth, windowHight
+func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+	resolutionWidth := config.ResolutionSize.Width
+	resolutionHeight := config.ResolutionSize.Height
+
+	return resolutionWidth, resolutionHeight
 }
 
 func main() {
+	tileImages := systems.LoadTiles()
 
+	gameMap := [][]int{
+		{-1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	}
+
+	tileSystem := &systems.TileSystem{
+		GameMap:    gameMap,
+		TileImages: tileImages,
+	}
+
+	entitySlice := tileSystem.InitializeTiles()
 	windowWidth := config.WindowSize.Width
-	windowHight := config.WindowSize.Height
-	entitySlice := initialize.InitializeEntities()
+	windowHeight := config.WindowSize.Height
 
 	// Init systems
-	collisionSystem := &systems.CollisionSystem{}
-	triggerCollisionSystem := &systems.TriggerCollisionSystem{}
+	collisionSystem := &systems.CollisionSystem{
+		GameMap: gameMap,
+	}
+	foodRespawnSystem := &systems.FoodRespawnSystem{}
+	moveCollideSystem := systems.NewMoveCollideSystem()
 
-	movementSystem := &systems.MovementSystem{}
+	triggerCollisionSystem := &systems.TriggerCollisionSystem{
+		FoodRespawnSystem: foodRespawnSystem,
+		MoveCollideSystem: moveCollideSystem,
+		CollisionSystem:   collisionSystem,
+	}
+
+	movementSystem := &systems.MovementSystem{
+		MoveCollideSystem: moveCollideSystem,
+	}
 	drawSystem := &systems.DrawSystem{}
 	userInputSystem := &systems.UserInputSystem{}
 
@@ -66,8 +98,11 @@ func main() {
 		drawSystem:             drawSystem,
 		userInputSystem:        userInputSystem,
 	}
-	ebiten.SetWindowSize(windowWidth, windowHight)
+	ebiten.SetWindowSize(windowWidth, windowHeight)
 	ebiten.SetWindowTitle("Green Square Moving Back and Forth")
+
+	// Set a fixed frame rate of 60 FPS
+
 	if err := ebiten.RunGame(game); err != nil {
 		panic(err)
 	}

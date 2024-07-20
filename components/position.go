@@ -4,5 +4,6 @@ package components
 const PositionComponentID = "PositionComponent"
 
 type PositionComponent struct {
-	X, Y float64
+	X float64
+	Y float64
 }
