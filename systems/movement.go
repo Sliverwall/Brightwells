@@ -5,21 +5,23 @@ import (
 	"Brightwells/config"
 	"Brightwells/entities"
 	"math"
+	"time"
 )
 
 type MovementSystem struct {
 	CollisionSystem *CollisionSystem
+	LastUpdateTime  time.Time
+	UpdateInterval  time.Duration
 }
 
 func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
+	currentTime := time.Now()
+	if currentTime.Sub(ms.LastUpdateTime) < ms.UpdateInterval {
+		return // Not enough time has passed, skip update
+	}
+	ms.LastUpdateTime = currentTime
+
 	for _, entity := range entitySlice {
-		// var fps float64
-		// if ebiten.ActualFPS() == 0 {
-		// 	fps = 60.0
-		// } else {
-		// 	fps = ebiten.ActualFPS()
-		// }
-		// dt := 1.0 / fps // Assume 60 FPS for movement calculations; adjust as needed
 		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.VelocityComponentID) {
 			// Update position based on velocity
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
@@ -28,28 +30,28 @@ func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
 			// Calculate movement for this frame
 			futureTileX := position.TileX + velocity.VX
 			futureTileY := position.TileY + velocity.VY
-			futrePositionX := math.Round(position.TileX / config.TileSize)
-			futrePositionY := math.Round(position.TileY / config.TileSize)
+			futurePositionX := math.Round(futureTileX * config.TileSize)
+			futurePositionY := math.Round(futureTileY * config.TileSize)
 
 			if !entity.HasComponent(components.CollisionBoxID) {
 				// No need to check collision boxes, Move to the next tile
 				position.TileX = futureTileX
 				position.TileY = futureTileY
-				position.X = futrePositionX
-				position.Y = futrePositionY
+				position.X = futurePositionX
+				position.Y = futurePositionY
 				return
 			}
 
 			// Check for collisions at the future position
 			if ms.CollisionSystem.IsTileOccupiedByCollidableEntity(futureTileX, futureTileY, entitySlice) {
 				// Prevent movement
-				velocity.VX, velocity.VY = 0.0, 0.0
+				continue
 			} else {
 				// Move to the next tile
 				position.TileX = futureTileX
 				position.TileY = futureTileY
-				position.X = futrePositionX
-				position.Y = futrePositionY
+				position.X = futurePositionX
+				position.Y = futurePositionY
 			}
 		}
 	}

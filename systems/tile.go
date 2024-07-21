@@ -38,7 +38,7 @@ func (ts *TileSystem) InitializeTiles() []*entities.Entity {
 				entity = entities.NewPlayer(posX, posY, 0, 0, img, layer)
 			case 1:
 				layer = 2
-				entity = entities.NewNPC(posX, posY, 0, 0, img, layer)
+				entity = entities.NewNPC(posX, posY, -1, 0, img, layer)
 			case 2:
 				// Initialize regular tile entity
 				layer = 1

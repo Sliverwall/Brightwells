@@ -1,22 +1,12 @@
 package config
 
-var (
-	// WindowSize stores the current window size
-	WindowSize = struct {
-		Width  int
-		Height int
-	}{
-		Width:  600,
-		Height: 600,
-	}
+import "time"
 
-	ResolutionSize = struct {
-		Width  int
-		Height int
-	}{
-		Width:  190,
-		Height: 120,
-	}
-
-	TileSize float64 = 16
+const (
+	WINDOW_WIDTH      int           = 600
+	WINDOW_HEIGHT     int           = 600
+	RESOLUTION_WIDTH  int           = 300
+	RESOLUTION_HEIGHT int           = 300
+	TileSize          float64       = 16
+	TICK_RATE         time.Duration = 300
 )

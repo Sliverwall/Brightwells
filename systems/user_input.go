@@ -8,7 +8,6 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type UserInputSystem struct{}
@@ -22,20 +21,21 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 
 			// Control movement
 			speed := 1.0
-			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+
+			if ebiten.IsKeyPressed(ebiten.KeyUp) {
 				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 16, 16, 16, 16
 				velocity.VY = -speed
-			} else if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			} else if ebiten.IsKeyPressed(ebiten.KeyDown) {
 				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 0, 0, 16, 16
 				velocity.VY = speed
 			} else {
 				velocity.VY = 0
 			}
 
-			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) && !inpututil.IsKeyJustPressed(ebiten.KeyUp) && !inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			if ebiten.IsKeyPressed(ebiten.KeyLeft) && !ebiten.IsKeyPressed(ebiten.KeyUp) && !ebiten.IsKeyPressed(ebiten.KeyDown) {
 				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 32, 32, 16, 16
 				velocity.VX = -speed
-			} else if inpututil.IsKeyJustPressed(ebiten.KeyRight) && !inpututil.IsKeyJustPressed(ebiten.KeyUp) && !inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			} else if ebiten.IsKeyPressed(ebiten.KeyRight) && !ebiten.IsKeyPressed(ebiten.KeyUp) && !ebiten.IsKeyPressed(ebiten.KeyDown) {
 				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 48, 48, 16, 16
 				velocity.VX = speed
 			} else {

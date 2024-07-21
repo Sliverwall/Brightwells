@@ -5,6 +5,7 @@ import (
 	"Brightwells/entities"
 	"Brightwells/systems"
 	"image/color"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -40,18 +41,20 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	resolutionWidth := config.ResolutionSize.Width
-	resolutionHeight := config.ResolutionSize.Height
+	resolutionWidth := config.RESOLUTION_WIDTH
+	resolutionHeight := config.RESOLUTION_HEIGHT
 
 	return resolutionWidth, resolutionHeight
 }
 
 func main() {
+
+	updateInterval := 300 * time.Millisecond // Update tick rate
 	tileImages := systems.LoadTiles()
 
 	gameMap := [][]int{
-		{-1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{-1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -68,8 +71,8 @@ func main() {
 	}
 
 	entitySlice := tileSystem.InitializeTiles()
-	windowWidth := config.WindowSize.Width
-	windowHeight := config.WindowSize.Height
+	windowWidth := config.WINDOW_WIDTH
+	windowHeight := config.WINDOW_HEIGHT
 
 	// Init systems
 	collisionSystem := &systems.CollisionSystem{
@@ -84,6 +87,8 @@ func main() {
 
 	movementSystem := &systems.MovementSystem{
 		CollisionSystem: collisionSystem,
+		LastUpdateTime:  time.Now(),
+		UpdateInterval:  updateInterval,
 	}
 	drawSystem := &systems.DrawSystem{}
 	userInputSystem := &systems.UserInputSystem{}
