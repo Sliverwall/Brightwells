@@ -2,6 +2,7 @@ package systems
 
 import (
 	"Brightwells/components"
+	"Brightwells/config"
 	"Brightwells/entities"
 	"image"
 	"math"
@@ -24,8 +25,8 @@ func (ds *DrawSystem) Update(entitySlice []*entities.Entity, screen *ebiten.Imag
 			sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
 
 			// Calculate the actual position on the screen
-			actualX := math.Round(position.X)
-			actualY := math.Round(position.Y)
+			actualX := math.Round(position.TileX * config.TileSize)
+			actualY := math.Round(position.TileY * config.TileSize)
 
 			// Set the translation of the drawImage
 			opts := ebiten.DrawImageOptions{}
