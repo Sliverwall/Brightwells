@@ -34,7 +34,7 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// Clear the screen with black color
-	screen.Fill(color.Black)
+	screen.Fill(color.Opaque)
 	// Draw the entities using the draw system
 	g.drawSystem.Update(g.entitySlice, screen)
 }
@@ -76,16 +76,14 @@ func main() {
 		GameMap: gameMap,
 	}
 	foodRespawnSystem := &systems.FoodRespawnSystem{}
-	moveCollideSystem := systems.NewMoveCollideSystem()
 
 	triggerCollisionSystem := &systems.TriggerCollisionSystem{
 		FoodRespawnSystem: foodRespawnSystem,
-		MoveCollideSystem: moveCollideSystem,
 		CollisionSystem:   collisionSystem,
 	}
 
 	movementSystem := &systems.MovementSystem{
-		MoveCollideSystem: moveCollideSystem,
+		CollisionSystem: collisionSystem,
 	}
 	drawSystem := &systems.DrawSystem{}
 	userInputSystem := &systems.UserInputSystem{}

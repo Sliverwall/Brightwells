@@ -8,6 +8,7 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type UserInputSystem struct{}
@@ -20,21 +21,21 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
 
 			// Control movement
-			speed := config.TileSize
-			if ebiten.IsKeyPressed(ebiten.KeyUp) {
+			speed := 1.0
+			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
 				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 16, 16, 16, 16
 				velocity.VY = -speed
-			} else if ebiten.IsKeyPressed(ebiten.KeyDown) {
+			} else if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
 				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 0, 0, 16, 16
 				velocity.VY = speed
 			} else {
 				velocity.VY = 0
 			}
 
-			if ebiten.IsKeyPressed(ebiten.KeyLeft) && !ebiten.IsKeyPressed(ebiten.KeyUp) && !ebiten.IsKeyPressed(ebiten.KeyDown) {
+			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) && !inpututil.IsKeyJustPressed(ebiten.KeyUp) && !inpututil.IsKeyJustPressed(ebiten.KeyDown) {
 				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 32, 32, 16, 16
 				velocity.VX = -speed
-			} else if ebiten.IsKeyPressed(ebiten.KeyRight) && !ebiten.IsKeyPressed(ebiten.KeyUp) && !ebiten.IsKeyPressed(ebiten.KeyDown) {
+			} else if inpututil.IsKeyJustPressed(ebiten.KeyRight) && !inpututil.IsKeyJustPressed(ebiten.KeyUp) && !inpututil.IsKeyJustPressed(ebiten.KeyDown) {
 				sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 48, 48, 16, 16
 				velocity.VX = speed
 			} else {
@@ -46,7 +47,7 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 				x, y := ebiten.CursorPosition()
 				destX := math.Round(float64(x) / config.TileSize)
 				destY := math.Round(float64(y) / config.TileSize)
-				log.Print("clicked tileX,tileY/X,Y", destX, destY, "/", x, y)
+				log.Print("clicked tileX,tileY/X,Y ", destX, destY)
 
 			}
 

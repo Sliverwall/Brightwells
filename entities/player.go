@@ -23,13 +23,9 @@ func NewPlayer(posX, posY, velX, velY float64, sprite *ebiten.Image, layer int) 
 		Image: sprite,
 		X:     0, Y: 0, X1: 16, Y1: 16, // Initial sub-image coordinates
 	})
-	entity.AddComponent(components.CollisionComponentID, &components.CollisionComponent{
-		Width:  config.TileSize / 2,
-		Height: config.TileSize / 2,
-	})
+	entity.AddComponent(components.CollisionComponentID, &components.CollisionComponent{})
 	entity.AddComponent(components.CollisionBoxID, &components.CollisionBox{
-		PositionComponent:  entity.GetComponent(components.PositionComponentID).(*components.PositionComponent),
-		CollisionComponent: entity.GetComponent(components.CollisionComponentID).(*components.CollisionComponent),
+		PositionComponent: entity.GetComponent(components.PositionComponentID).(*components.PositionComponent),
 	})
 	entity.AddComponent(components.DestinationComponentID, &components.DestinationComponent{X: posX, Y: posY})
 	return entity

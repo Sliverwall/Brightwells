@@ -1,10 +1,11 @@
-package systems
+package arcived_systems
 
 import (
 	"Brightwells/components"
 	"Brightwells/entities"
 )
 
+// Replaced by movement system handling and preventing collisions between objects.
 type MoveCollideSystem struct {
 	originalPositions map[int]components.PositionComponent
 }
