@@ -4,6 +4,7 @@ import (
 	"Brightwells/components"
 	"Brightwells/entities"
 	"image"
+	"math"
 	"sort"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -23,12 +24,12 @@ func (ds *DrawSystem) Update(entitySlice []*entities.Entity, screen *ebiten.Imag
 			sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
 
 			// Calculate the actual position on the screen
-			actualX := position.X
-			actualY := position.Y
+			actualX := math.Round(position.X)
+			actualY := math.Round(position.Y)
 
 			// Set the translation of the drawImage
 			opts := ebiten.DrawImageOptions{}
-			opts.GeoM.Translate(float64(actualX), float64(actualY))
+			opts.GeoM.Translate(float64(actualX), actualY)
 
 			// Draw the image, ensuring the correct sub-image is selected
 			subImageRect := image.Rect(

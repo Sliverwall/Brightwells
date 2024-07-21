@@ -2,7 +2,9 @@ package systems
 
 import (
 	"Brightwells/components"
+	"Brightwells/config"
 	"Brightwells/entities"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -12,7 +14,6 @@ type MovementSystem struct {
 }
 
 func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
-
 	var fps float64
 	if ebiten.ActualFPS() == 0 {
 		fps = 60.0
@@ -33,6 +34,9 @@ func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
 			// Calculate movement for this frame
 			position.X += velocity.VX * dt
 			position.Y += velocity.VY * dt
+			position.TileX = math.Round(position.X / config.TileSize)
+			position.TileY = math.Round(position.Y / config.TileSize)
+
 		}
 	}
 }
