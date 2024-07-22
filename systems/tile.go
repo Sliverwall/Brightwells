@@ -38,7 +38,7 @@ func (ts *TileSystem) InitializeTiles() []*entities.Entity {
 				entity = entities.NewPlayer(posX, posY, 0, 0, img, layer)
 			case 1:
 				layer = 2
-				entity = entities.NewNPC(posX, posY, -1, 0, img, layer)
+				entity = entities.NewNPC(posX, posY, 0, 0, img, layer)
 			case 2:
 				// Initialize regular tile entity
 				layer = 1
@@ -70,7 +70,7 @@ func LoadTiles() map[int]*ebiten.Image {
 		log.Fatal(err)
 	}
 
-	logicSprite, _, err := ebitenutil.NewImageFromFile("assets/images/TilesetLogic.png")
+	orangeFloorSprite, _, err := ebitenutil.NewImageFromFile("assets/images/TilesetField.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -79,7 +79,7 @@ func LoadTiles() map[int]*ebiten.Image {
 		-1: playerSprite,
 		1:  npcSprite,
 		2:  appleSprite,
-		0:  logicSprite,
+		0:  orangeFloorSprite,
 		// Add more tile types and their images here
 	}
 

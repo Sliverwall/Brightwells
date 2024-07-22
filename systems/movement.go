@@ -30,8 +30,8 @@ func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
 			// Calculate movement for this frame
 			futureTileX := position.TileX + velocity.VX
 			futureTileY := position.TileY + velocity.VY
-			futurePositionX := math.Round(futureTileX * config.TileSize)
-			futurePositionY := math.Round(futureTileY * config.TileSize)
+			futurePositionX := math.Floor(futureTileX * config.TileSize)
+			futurePositionY := math.Floor(futureTileY * config.TileSize)
 
 			if !entity.HasComponent(components.CollisionBoxID) {
 				// No need to check collision boxes, Move to the next tile
