@@ -13,12 +13,20 @@ import (
 
 type DrawSystem struct{}
 
-func (ds *DrawSystem) Update(entitySlice []*entities.Entity, screen *ebiten.Image) {
+func (ds *DrawSystem) Update(backgroundTiles []*entities.Entity, entitySlice []*entities.Entity, screen *ebiten.Image) {
+	// Draw background tiles first
+	ds.drawEntities(backgroundTiles, screen)
 
 	// Sort entities by layer
 	sort.Slice(entitySlice, func(i, j int) bool {
 		return entitySlice[i].RenderLayer < entitySlice[j].RenderLayer
 	})
+
+	// Draw entities
+	ds.drawEntities(entitySlice, screen)
+}
+
+func (ds *DrawSystem) drawEntities(entitySlice []*entities.Entity, screen *ebiten.Image) {
 	for _, entity := range entitySlice {
 		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.SpriteComponentID) {
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)

@@ -4,54 +4,63 @@ import (
 	"Brightwells/config"
 	"Brightwells/entities"
 	"log"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type TileSystem struct {
-	GameMap    [][]int
-	TileImages map[int]*ebiten.Image
+	BackgroundMap [][]int
+	ForegroundMap [][]int
+	TileImages    map[int]*ebiten.Image
 }
 
-func (ts *TileSystem) InitializeTiles() []*entities.Entity {
+func (ts *TileSystem) InitializeTiles() ([]*entities.Entity, []*entities.Entity) {
+	var backgroundTiles []*entities.Entity
 	var entitySlice []*entities.Entity
 
-	for y, row := range ts.GameMap {
+	// Initialize background tiles
+	for y, row := range ts.BackgroundMap {
 		for x, tile := range row {
 			img, ok := ts.TileImages[tile]
 			if !ok {
-				// Handle case where tile type is not found
 				continue
 			}
+			posX := math.Floor(float64(x) * config.TileSize)
+			posY := math.Floor(float64(y) * config.TileSize)
+			layer := 1
+			entity := entities.NewTileEntity(posX, posY, img, layer)
+			backgroundTiles = append(backgroundTiles, entity)
+		}
+	}
 
+	// Initialize foreground entities
+	for y, row := range ts.ForegroundMap {
+		for x, tile := range row {
+			img, ok := ts.TileImages[tile]
+			if !ok {
+				continue
+			}
 			posX := float64(x) * config.TileSize
 			posY := float64(y) * config.TileSize
-
 			var entity *entities.Entity
-			var layer int
+			layer := 2
 
 			switch tile {
 			case -1:
-				// Initialize player entity
-				layer = 1
 				entity = entities.NewPlayer(posX, posY, 0, 0, img, layer)
 			case 1:
-				layer = 2
 				entity = entities.NewNPC(posX, posY, 0, 0, img, layer)
 			case 2:
-				// Initialize regular tile entity
-				layer = 1
 				entity = entities.NewApple(posX, posY, img, layer)
-			case 0:
-				layer = -1
-				entity = entities.NewTileEntity(posX, posY, img, layer)
+			default:
+				continue
 			}
-
 			entitySlice = append(entitySlice, entity)
 		}
 	}
-	return entitySlice
+	return backgroundTiles, entitySlice
 }
 
 func LoadTiles() map[int]*ebiten.Image {

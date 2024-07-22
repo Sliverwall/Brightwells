@@ -12,7 +12,8 @@ import (
 
 type Game struct {
 	// game ECS init
-	entitySlice []*entities.Entity
+	backgroundTiles []*entities.Entity
+	entitySlice     []*entities.Entity
 
 	collisionSystem        *systems.CollisionSystem
 	triggerCollisionSystem *systems.TriggerCollisionSystem
@@ -36,8 +37,9 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	// Clear the screen with black color
 	screen.Fill(color.Opaque)
-	// Draw the entities using the draw system
-	g.drawSystem.Update(g.entitySlice, screen)
+
+	// Draw the background tiles and entities using the draw system
+	g.drawSystem.Update(g.backgroundTiles, g.entitySlice, screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -52,7 +54,22 @@ func main() {
 	updateInterval := config.TICK_RATE * time.Millisecond // Update tick rate
 	tileImages := systems.LoadTiles()
 
-	gameMap := [][]int{
+	// Background tile map
+	backgroundMap := [][]int{
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	}
+
+	// Foreground entity map
+	foregroundMap := [][]int{
 		{-1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
@@ -66,17 +83,19 @@ func main() {
 	}
 
 	tileSystem := &systems.TileSystem{
-		GameMap:    gameMap,
-		TileImages: tileImages,
+		BackgroundMap: backgroundMap,
+		ForegroundMap: foregroundMap,
+		TileImages:    tileImages,
 	}
 
-	entitySlice := tileSystem.InitializeTiles()
+	// Initialize background tiles and entities
+	backgroundTiles, entitySlice := tileSystem.InitializeTiles()
 	windowWidth := config.WINDOW_WIDTH
 	windowHeight := config.WINDOW_HEIGHT
 
 	// Init systems
 	collisionSystem := &systems.CollisionSystem{
-		GameMap: gameMap,
+		GameMap: foregroundMap,
 	}
 	foodRespawnSystem := &systems.FoodRespawnSystem{}
 
@@ -94,6 +113,7 @@ func main() {
 	userInputSystem := &systems.UserInputSystem{}
 
 	game := &Game{
+		backgroundTiles:        backgroundTiles,
 		entitySlice:            entitySlice,
 		triggerCollisionSystem: triggerCollisionSystem,
 		collisionSystem:        collisionSystem,
