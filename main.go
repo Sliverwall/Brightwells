@@ -49,7 +49,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 
 func main() {
 
-	updateInterval := 300 * time.Millisecond // Update tick rate
+	updateInterval := config.TICK_RATE * time.Millisecond // Update tick rate
 	tileImages := systems.LoadTiles()
 
 	gameMap := [][]int{
