@@ -28,6 +28,10 @@ func NewPlayer(posX, posY, velX, velY float64, sprite *ebiten.Image, layer int) 
 	entity.AddComponent(components.DestinationComponentID, &components.DestinationComponent{X: posX, Y: posY})
 
 	// Combat components
+	entity.AddComponent(components.AttackerComponentID, &components.AttackerComponent{
+		IsAttacking: false,
+		Target:      -1,
+	})
 	entity.AddComponent(components.DamageComponentID, &components.DamageComponent{})
 	entity.AddComponent(components.SkillsComponentID, &components.SkillsComponent{
 		CurrentHealth: 15,

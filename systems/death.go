@@ -23,6 +23,8 @@ func (ds *DeathSystem) Update(entitySlice []*entities.Entity) {
 			// reset currentHealth back to max
 			skills.CurrentHealth = skills.Health
 
+			// Add loot system later
+
 			// Kill entity
 			entity.KillEntity()
 

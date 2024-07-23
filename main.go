@@ -3,9 +3,9 @@ package main
 import (
 	"Brightwells/config"
 	"Brightwells/entities"
+	"Brightwells/state"
 	"Brightwells/systems"
 	"image/color"
-	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -21,12 +21,17 @@ type Game struct {
 	movementSystem  *systems.MovementSystem
 	drawSystem      *systems.DrawSystem
 	userInputSystem *systems.UserInputSystem
+	deathSystem     systems.DeathSystem
+	damageSystem    *systems.DamageSystem
 }
 
 func (g *Game) Update() error {
 
 	// update existing entities
 	g.entitySlice = entities.GetExistEntitySlice(g.entitySlice)
+	g.damageSystem.Update(g.entitySlice)
+	g.deathSystem.Update(g.entitySlice)
+
 	g.triggerCollisionSystem.Update(g.entitySlice)
 
 	g.movementSystem.Update(g.entitySlice)
@@ -51,7 +56,8 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 
 func main() {
 
-	updateInterval := config.TICK_RATE * time.Millisecond // Update tick rate
+	// Set world state
+	worldInstance := state.WorldInstance
 	tileImages := systems.LoadTiles()
 
 	// Background tile map
@@ -106,8 +112,10 @@ func main() {
 
 	movementSystem := &systems.MovementSystem{
 		CollisionSystem: collisionSystem,
-		LastUpdateTime:  time.Now(),
-		UpdateInterval:  updateInterval,
+		WorldInstance:   *worldInstance,
+	}
+	damageSystem := &systems.DamageSystem{
+		WorldInstance: *worldInstance,
 	}
 	drawSystem := &systems.DrawSystem{}
 	userInputSystem := &systems.UserInputSystem{}
@@ -120,9 +128,10 @@ func main() {
 		movementSystem:         movementSystem,
 		drawSystem:             drawSystem,
 		userInputSystem:        userInputSystem,
+		damageSystem:           damageSystem,
 	}
 	ebiten.SetWindowSize(windowWidth, windowHeight)
-	ebiten.SetWindowTitle("Green Square Moving Back and Forth")
+	ebiten.SetWindowTitle("Brightwells")
 
 	// Set a fixed frame rate of 60 FPS
 

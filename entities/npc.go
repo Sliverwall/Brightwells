@@ -34,6 +34,10 @@ func NewNPC(posX, posY, velX, velY float64, sprite *ebiten.Image, layer int) *En
 	entity.AddComponent(components.CollisionBoxID, &components.CollisionBox{})
 
 	// Combat compontents
+	entity.AddComponent(components.AttackerComponentID, &components.AttackerComponent{
+		IsAttacking: false,
+		Target:      -1,
+	})
 	entity.AddComponent(components.DamageComponentID, &components.DamageComponent{})
 	entity.AddComponent(components.SkillsComponentID, &components.SkillsComponent{
 		CurrentHealth: 15,

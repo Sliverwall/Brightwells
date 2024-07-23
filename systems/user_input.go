@@ -25,14 +25,23 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 
 			// Log for debugging
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) {
-				log.Print("Destination X/Y: ", destination.X, destination.Y, " Current Pos X/Y: ", position.TileX, position.TileY)
+				checkX, checkY := ebiten.CursorPosition()
+				checkTileX := math.Floor(float64(checkX) / config.TileSize)
+				checkTileY := math.Floor(float64(checkY) / config.TileSize)
+
+				checkEntityID := CheckTileForEntity(checkTileX, checkTileY, entitySlice)
+
+				attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
+				attacker.IsAttacking = true
+				attacker.Target = checkEntityID
+				log.Print(checkEntityID)
 			}
 
 			// ----------Left click START---------
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 				x, y := ebiten.CursorPosition()
-				destX := float64(x) / config.TileSize
-				destY := float64(y) / config.TileSize
+				destX := math.Floor(float64(x) / config.TileSize)
+				destY := math.Floor(float64(y) / config.TileSize)
 				destination.X = math.Floor(destX)
 				destination.Y = math.Floor(destY)
 				log.Print("Clicked tileX,tileY: ", destination.X, destination.Y)
