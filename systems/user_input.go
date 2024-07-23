@@ -49,20 +49,20 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			// Control movement
 			speed := 1.0
 			// Pathfinding
+			// X-axis
 			if position.TileX < destination.X {
 				velocity.VX = speed
-				velocity.VY = 0
 			} else if position.TileX > destination.X {
 				velocity.VX = -speed
-				velocity.VY = 0
-			} else if position.TileY < destination.Y {
-				velocity.VY = speed
+			} else if position.TileX == destination.X {
 				velocity.VX = 0
+			}
+			// Y-axis
+			if position.TileY < destination.Y {
+				velocity.VY = speed
 			} else if position.TileY > destination.Y {
 				velocity.VY = -speed
-				velocity.VX = 0
-			} else {
-				velocity.VX = 0
+			} else if position.TileY == destination.Y {
 				velocity.VY = 0
 			}
 			// ----------Left click END---------

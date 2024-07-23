@@ -1,7 +1,6 @@
 package state
 
 import (
-	"Brightwells/config"
 	"time"
 )
 
@@ -11,6 +10,6 @@ type World struct {
 }
 
 var WorldInstance = &World{
-	UpdateInterval: config.TICK_RATE * time.Millisecond,
+	UpdateInterval: 300 * time.Millisecond,
 	LastTick:       time.Now(),
 }
