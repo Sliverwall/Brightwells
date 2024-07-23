@@ -47,17 +47,3 @@ func (cs *CollisionSystem) CheckTileCollisions(entitySlice []*entities.Entity) m
 func (cs *CollisionSystem) isOnSameTile(X1, Y1, X2, Y2 float64) bool {
 	return (X1 == X2 && Y1 == Y2)
 }
-
-// CollisionSystem method to check if a tile is occupied by a collidable entity
-func (cs *CollisionSystem) IsTileOccupiedByCollidableEntity(tileX, tileY float64, entitySlice []*entities.Entity) bool {
-	for _, entity := range entitySlice {
-		if !entity.HasComponent(components.CollisionBoxID) || !entity.HasComponent(components.PositionComponentID) {
-			continue
-		}
-		position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-		if position.TileX == tileX && position.TileY == tileY {
-			return true
-		}
-	}
-	return false
-}

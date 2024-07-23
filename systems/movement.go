@@ -10,8 +10,7 @@ import (
 )
 
 type MovementSystem struct {
-	CollisionSystem *CollisionSystem
-	WorldInstance   state.World
+	WorldInstance state.World
 }
 
 func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
@@ -43,7 +42,7 @@ func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
 			}
 
 			// Check for collisions at the future position
-			if ms.CollisionSystem.IsTileOccupiedByCollidableEntity(futureTileX, futureTileY, entitySlice) {
+			if IsTileOccupiedByCollidableEntity(futureTileX, futureTileY, entitySlice) {
 				// Prevent movement
 				continue
 			} else {

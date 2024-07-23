@@ -111,8 +111,7 @@ func main() {
 	}
 
 	movementSystem := &systems.MovementSystem{
-		CollisionSystem: collisionSystem,
-		WorldInstance:   *worldInstance,
+		WorldInstance: *worldInstance,
 	}
 	damageSystem := &systems.DamageSystem{
 		WorldInstance: *worldInstance,

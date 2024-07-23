@@ -24,6 +24,20 @@ func CheckTileForEntity(tileX, tileY float64, entitySlice []*entities.Entity) in
 	return -1
 }
 
+// IsTileOccupiedByColidableEntity method to check if a tile is occupied by a collidable entity
+func IsTileOccupiedByCollidableEntity(tileX, tileY float64, entitySlice []*entities.Entity) bool {
+	for _, entity := range entitySlice {
+		if !entity.HasComponent(components.CollisionBoxID) || !entity.HasComponent(components.PositionComponentID) {
+			continue
+		}
+		position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+		if position.TileX == tileX && position.TileY == tileY {
+			return true
+		}
+	}
+	return false
+}
+
 // IsWithinOneTile checks if two entities are within one tile of eachother
 func IsWithinOneTile(entity1, entity2 *entities.Entity) bool {
 	position1 := entity1.GetComponent(components.PositionComponentID).(*components.PositionComponent)
