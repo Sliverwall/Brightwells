@@ -30,7 +30,7 @@ func NewPlayer(posX, posY, velX, velY float64, sprite *ebiten.Image, layer int) 
 	// Combat components
 	entity.AddComponent(components.DamageComponentID, &components.DamageComponent{})
 	entity.AddComponent(components.SkillsComponentID, &components.SkillsComponent{
-		CurrentHelath: 15,
+		CurrentHealth: 15,
 		Health:        15,
 		Attack:        5,
 		Strength:      5,
