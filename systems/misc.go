@@ -3,6 +3,7 @@ package systems
 import (
 	"Brightwells/components"
 	"Brightwells/entities"
+	"math"
 )
 
 // Module to hold useful functions not tied to any one system
@@ -21,4 +22,16 @@ func CheckTileForEntity(tileX, tileY float64, entitySlice []*entities.Entity) in
 	}
 	// Return -1 if no entity is on tile
 	return -1
+}
+
+// IsWithinOneTile checks if two entities are within one tile of eachother
+func IsWithinOneTile(entity1, entity2 *entities.Entity) bool {
+	position1 := entity1.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+	position2 := entity2.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+
+	deltaX := math.Abs(position1.TileX - position2.TileX)
+	deltaY := math.Abs(position1.TileY - position2.TileY)
+
+	// Check if the entities are within one tile of each other in any direction
+	return deltaX <= 1 && deltaY <= 1
 }

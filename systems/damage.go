@@ -21,30 +21,38 @@ func (ds *DamageSystem) Update(entitySlice []*entities.Entity) {
 	for _, attacker := range entitySlice {
 		if attacker.HasComponent(components.AttackerComponentID) && attacker.HasComponent(components.SkillsComponentID) {
 			attackComponent := attacker.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
-			if attackComponent.IsAttacking {
+			if attackComponent.Target != -1 {
 				targetID := attackComponent.Target
 				for _, target := range entitySlice {
 					if target.ID == targetID && target.HasComponent(components.SkillsComponentID) && target.ID != attacker.ID {
+						if IsWithinOneTile(attacker, target) {
+							// Reset attacker's destination tile to current tile after reaching target
+							attackerDestination := attacker.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
+							attackerPosition := attacker.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 
-						// Retrieve the SkillsComponent of the target
-						targetSkills := target.GetComponent(components.SkillsComponentID).(*components.SkillsComponent)
+							attackerDestination.X, attackerDestination.Y = attackerPosition.TileX, attackerPosition.TileY
+							// flag attacker as attacking
+							attackComponent.IsAttacking = true
+							// Retrieve the SkillsComponent of the target
+							targetSkills := target.GetComponent(components.SkillsComponentID).(*components.SkillsComponent)
 
-						// Calculate damage
-						damage := 1
+							// Calculate damage
+							damage := 1
 
-						// Deal damage to the target
-						targetSkills.CurrentHealth -= damage
+							// Deal damage to the target
+							targetSkills.CurrentHealth -= damage
 
-						// Ensure health does not go below zero
-						if targetSkills.CurrentHealth < 0 {
-							targetSkills.CurrentHealth = 0
-							// Reset attack status for the attacker
-							attackComponent.IsAttacking = false
-							attackComponent.Target = -1
+							// Ensure health does not go below zero
+							if targetSkills.CurrentHealth < 0 {
+								targetSkills.CurrentHealth = 0
+								// Reset attack status for the attacker
+								attackComponent.IsAttacking = false
+								attackComponent.Target = -1
+							}
+
+							// Print damage dealt for debugging
+							println("Entity", attacker.ID, "attacked Entity", target.ID, "for", damage, "damage!")
 						}
-
-						// Print damage dealt for debugging
-						println("Entity", attacker.ID, "attacked Entity", target.ID, "for", damage, "damage!")
 					}
 				}
 			}

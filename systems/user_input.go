@@ -17,28 +17,47 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 	for _, entity := range entitySlice {
 		// Checks for players that have position and velocity
 		if entity.HasComponent(components.PlayerComponentID) {
+			// Get needed compontents
 			sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
 			destination := entity.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
+			attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
 			sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 0, 0, 16, 16
 
 			// Log for debugging
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) {
+				// Get tile data on what was clicked
 				checkX, checkY := ebiten.CursorPosition()
 				checkTileX := math.Floor(float64(checkX) / config.TileSize)
 				checkTileY := math.Floor(float64(checkY) / config.TileSize)
 
+				// Use tile data to grab entity ID on targeted tile
 				checkEntityID := CheckTileForEntity(checkTileX, checkTileY, entitySlice)
+				targetEntity := entities.GetEntityByID(entitySlice, checkEntityID)
 
-				attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
-				attacker.IsAttacking = true
+				// Use target's ID to get entities compontents
+				targetEntityPosition := targetEntity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+
+				// Set player's target id to entity clicked
 				attacker.Target = checkEntityID
+
+				// Set coords to start moving to be target's current tile
+				destX, destY := targetEntityPosition.TileX, targetEntityPosition.TileY
+
+				destination.X = destX
+				destination.Y = destY
 				log.Print(checkEntityID)
 			}
 
 			// ----------Left click START---------
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+				// Check if player is attacking, then turn off target and attacking
+				if attacker.IsAttacking {
+					attacker.Target = -1
+					attacker.IsAttacking = false
+				}
+				// Mark destination to move to
 				x, y := ebiten.CursorPosition()
 				destX := math.Floor(float64(x) / config.TileSize)
 				destY := math.Floor(float64(y) / config.TileSize)
