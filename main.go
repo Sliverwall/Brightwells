@@ -23,13 +23,13 @@ type Game struct {
 	userInputSystem *systems.UserInputSystem
 	deathSystem     systems.DeathSystem
 	damageSystem    *systems.DamageSystem
+	cameraSystem    *systems.CameraSystem
 }
 
 func (g *Game) Update() error {
 
 	// update existing entities
 	g.entitySlice = entities.GetExistEntitySlice(g.entitySlice)
-
 	g.damageSystem.Update(g.entitySlice)
 	g.deathSystem.Update(g.entitySlice)
 
@@ -59,6 +59,8 @@ func main() {
 
 	// Set world state
 	worldInstance := state.WorldInstance
+
+	// Load tiles
 	tileImages := systems.LoadTiles()
 
 	// Background tile map

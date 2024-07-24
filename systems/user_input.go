@@ -34,20 +34,24 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 
 				// Use tile data to grab entity ID on targeted tile
 				checkEntityID := CheckTileForEntity(checkTileX, checkTileY, entitySlice)
-				targetEntity := entities.GetEntityByID(entitySlice, checkEntityID)
 
-				// Use target's ID to get entities compontents
-				targetEntityPosition := targetEntity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+				// check if there is no entity
+				if checkEntityID != -1 {
+					targetEntity := entities.GetEntityByID(entitySlice, checkEntityID)
 
-				// Set player's target id to entity clicked
-				attacker.Target = checkEntityID
+					// Use target's ID to get entities compontents
+					targetEntityPosition := targetEntity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 
-				// Set coords to start moving to be target's current tile
-				destX, destY := targetEntityPosition.TileX, targetEntityPosition.TileY
+					// Set player's target id to entity clicked
+					attacker.Target = checkEntityID
 
-				destination.X = destX
-				destination.Y = destY
-				log.Print(checkEntityID)
+					// Set coords to start moving to be target's current tile
+					destX, destY := targetEntityPosition.TileX, targetEntityPosition.TileY
+
+					destination.X = destX
+					destination.Y = destY
+					log.Print(checkEntityID)
+				}
 			}
 
 			// ----------Left click START---------

@@ -15,16 +15,8 @@ type DrawSystem struct{}
 
 func (ds *DrawSystem) Update(backgroundTiles []*entities.Entity, entitySlice []*entities.Entity, screen *ebiten.Image) {
 
-	var camera *components.CameraComponent
-	// Find the camera entity
-	for _, entity := range entitySlice {
-		if entity.HasComponent(components.CameraComponentID) {
-			camera = entity.GetComponent(components.CameraComponentID).(*components.CameraComponent)
-			break
-		}
-	}
 	// Draw background tiles first
-	ds.drawEntities(backgroundTiles, screen, camera, -1)
+	ds.drawEntities(backgroundTiles, screen)
 
 	// Sort entities by layer
 	sort.Slice(entitySlice, func(i, j int) bool {
@@ -32,19 +24,18 @@ func (ds *DrawSystem) Update(backgroundTiles []*entities.Entity, entitySlice []*
 	})
 
 	// Draw entities
-	ds.drawEntities(entitySlice, screen, camera, 0)
+	ds.drawEntities(entitySlice, screen)
 }
 
-func (ds *DrawSystem) drawEntities(entitySlice []*entities.Entity, screen *ebiten.Image, camera *components.CameraComponent, layer int) {
+func (ds *DrawSystem) drawEntities(entitySlice []*entities.Entity, screen *ebiten.Image) {
 	for _, entity := range entitySlice {
-		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.SpriteComponentID) && (entity.RenderLayer == layer || layer == -1) {
+		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.SpriteComponentID) {
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 			sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
 
 			// Calculate the actual position on the screen
-			actualX := math.Floor(position.TileX*config.TileSize) - camera.X
-			actualY := math.Floor(position.TileY*config.TileSize) - camera.Y
-
+			actualX := math.Floor(position.TileX * config.TileSize)
+			actualY := math.Floor(position.TileY * config.TileSize)
 			// Set the translation of the drawImage
 			opts := ebiten.DrawImageOptions{}
 			opts.GeoM.Translate(float64(actualX), actualY)

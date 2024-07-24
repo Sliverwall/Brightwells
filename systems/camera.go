@@ -8,16 +8,12 @@ import (
 
 type CameraSystem struct{}
 
-func (cs *CameraSystem) Update(entitySlice []*entities.Entity) {
+func (cs *CameraSystem) Update(entitySlice []*entities.Entity, camera *entities.Entity) {
 	var player *entities.Entity
-	var camera *entities.Entity
 
 	for _, entity := range entitySlice {
 		if entity.HasComponent(components.PlayerComponentID) {
 			player = entity
-		}
-		if entity.HasComponent(components.CameraComponentID) {
-			camera = entity
 		}
 	}
 

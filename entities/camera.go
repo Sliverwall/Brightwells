@@ -8,7 +8,7 @@ import (
 )
 
 func NewCamera() *Entity {
-	entity := NewEntity(-1) // Ensure you have a NewEntity() function that initializes a new Entity.
+	entity := NewEntity(100)
 
 	// Spatial compontents
 	entity.AddComponent(components.CameraComponentID, &components.CameraComponent{
