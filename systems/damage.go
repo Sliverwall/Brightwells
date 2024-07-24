@@ -24,7 +24,7 @@ func (ds *DamageSystem) Update(entitySlice []*entities.Entity) {
 			if attackComponent.Target != -1 {
 				targetID := attackComponent.Target
 				for _, target := range entitySlice {
-					if target.ID == targetID && target.HasComponent(components.SkillsComponentID) && target.ID != attacker.ID {
+					if target.ID == targetID && target.HasComponent(components.SkillsComponentID) && target.HasComponent(components.DamageComponentID) && target.ID != attacker.ID {
 						if IsWithinOneTile(attacker, target) {
 							// Reset attacker's destination tile to current tile after reaching target
 							attackerDestination := attacker.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)

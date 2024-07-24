@@ -69,7 +69,7 @@ func LoadTiles() map[int]*ebiten.Image {
 		log.Fatal(err)
 	}
 
-	npcSprite, _, err := ebitenutil.NewImageFromFile("assets/images/npc1.png")
+	npcSprite, _, err := ebitenutil.NewImageFromFile("assets/images/caveGirl.png")
 	if err != nil {
 		log.Fatal(err)
 	}

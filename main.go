@@ -29,6 +29,7 @@ func (g *Game) Update() error {
 
 	// update existing entities
 	g.entitySlice = entities.GetExistEntitySlice(g.entitySlice)
+
 	g.damageSystem.Update(g.entitySlice)
 	g.deathSystem.Update(g.entitySlice)
 
@@ -78,12 +79,12 @@ func main() {
 	foregroundMap := [][]int{
 		{-1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 1, 0, 1, 0, 0, 0, 0},
 		{0, 0, 0, 2, 0, 1, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+		{0, 0, 0, 0, 0, 1, 0, 1, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 2, 2, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	}
@@ -103,6 +104,7 @@ func main() {
 	collisionSystem := &systems.CollisionSystem{
 		GameMap: foregroundMap,
 	}
+
 	foodRespawnSystem := &systems.FoodRespawnSystem{}
 
 	triggerCollisionSystem := &systems.TriggerCollisionSystem{
@@ -129,6 +131,7 @@ func main() {
 		userInputSystem:        userInputSystem,
 		damageSystem:           damageSystem,
 	}
+
 	ebiten.SetWindowSize(windowWidth, windowHeight)
 	ebiten.SetWindowTitle("Brightwells")
 
