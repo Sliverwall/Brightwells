@@ -19,6 +19,7 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 		if entity.HasComponent(components.PlayerComponentID) {
 			// Get needed compontents
 			sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
+			camera := entity.GetComponent(components.CameraComponentID).(*components.CameraComponent)
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
 			destination := entity.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
@@ -29,6 +30,8 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) {
 				// Get tile data on what was clicked
 				checkX, checkY := ebiten.CursorPosition()
+				checkX += int(camera.X)
+				checkY += int(camera.Y)
 				checkTileX := math.Floor(float64(checkX) / config.TileSize)
 				checkTileY := math.Floor(float64(checkY) / config.TileSize)
 
@@ -61,8 +64,14 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 					attacker.Target = -1
 					attacker.IsAttacking = false
 				}
-				// Mark destination to move to
+				// Capture x,y vector clicked on
 				x, y := ebiten.CursorPosition()
+
+				// Adjust for camera offset
+				x += int(camera.X)
+				y += int(camera.Y)
+
+				// Mark destination to move to
 				destX := math.Floor(float64(x) / config.TileSize)
 				destY := math.Floor(float64(y) / config.TileSize)
 				destination.X = math.Floor(destX)

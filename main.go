@@ -3,9 +3,9 @@ package main
 import (
 	"Brightwells/config"
 	"Brightwells/entities"
-	"Brightwells/state"
 	"Brightwells/systems"
 	"image/color"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -14,6 +14,7 @@ type Game struct {
 	// game ECS init
 	backgroundTiles []*entities.Entity
 	entitySlice     []*entities.Entity
+	player          *entities.Entity
 
 	collisionSystem        *systems.CollisionSystem
 	triggerCollisionSystem *systems.TriggerCollisionSystem
@@ -24,28 +25,44 @@ type Game struct {
 	deathSystem     systems.DeathSystem
 	damageSystem    *systems.DamageSystem
 	cameraSystem    *systems.CameraSystem
+	tickManager     *systems.TickManager
 }
 
 func (g *Game) Update() error {
 
-	// update existing entities
+	// Update entites
 	g.entitySlice = entities.GetExistEntitySlice(g.entitySlice)
-	g.damageSystem.Update(g.entitySlice)
-	g.deathSystem.Update(g.entitySlice)
-
-	g.triggerCollisionSystem.Update(g.entitySlice)
-
-	g.movementSystem.Update(g.entitySlice)
+	// Always update user input for responsiveness
 	g.userInputSystem.Update(g.entitySlice)
+
+	// Get player entity (consider caching this if it doesn't change often)
+	if g.player == nil {
+		g.player = entities.GetPlayerEntity(g.entitySlice)
+	}
+
+	// Check if it's time for a tick update
+	if g.tickManager.ShouldUpdate() {
+		// Update systems that should be tick-based
+		g.movementSystem.Update(g.entitySlice)
+		g.damageSystem.Update(g.entitySlice)
+		g.triggerCollisionSystem.Update(g.entitySlice)
+		g.deathSystem.Update(g.entitySlice)
+	}
+
+	// Always update camera for smooth following
+	g.cameraSystem.Update(g.player)
+
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	// Clear the screen with black color
+	// Clear the screen
+	screen.Clear()
+	// Set primer background
 	screen.Fill(color.Opaque)
 
 	// Draw the background tiles and entities using the draw system
-	g.drawSystem.Update(g.backgroundTiles, g.entitySlice, screen)
+	g.drawSystem.Update(g.backgroundTiles, g.entitySlice, screen, g.player)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -56,10 +73,6 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 }
 
 func main() {
-
-	// Set world state
-	worldInstance := state.WorldInstance
-
 	// Load tiles
 	tileImages := systems.LoadTiles()
 
@@ -114,12 +127,8 @@ func main() {
 		CollisionSystem:   collisionSystem,
 	}
 
-	movementSystem := &systems.MovementSystem{
-		WorldInstance: *worldInstance,
-	}
-	damageSystem := &systems.DamageSystem{
-		WorldInstance: *worldInstance,
-	}
+	movementSystem := &systems.MovementSystem{}
+	damageSystem := &systems.DamageSystem{}
 	drawSystem := &systems.DrawSystem{}
 	userInputSystem := &systems.UserInputSystem{}
 
@@ -132,6 +141,7 @@ func main() {
 		drawSystem:             drawSystem,
 		userInputSystem:        userInputSystem,
 		damageSystem:           damageSystem,
+		tickManager:            systems.NewTickManager(300 * time.Millisecond),
 	}
 
 	ebiten.SetWindowSize(windowWidth, windowHeight)

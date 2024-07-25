@@ -8,20 +8,13 @@ import (
 
 type CameraSystem struct{}
 
-func (cs *CameraSystem) Update(entitySlice []*entities.Entity, camera *entities.Entity) {
-	var player *entities.Entity
+func (cs *CameraSystem) Update(player *entities.Entity) {
 
-	for _, entity := range entitySlice {
-		if entity.HasComponent(components.PlayerComponentID) {
-			player = entity
-		}
-	}
-
-	if player != nil && camera != nil {
+	if player != nil {
 		playerPosition := player.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-		cameraComponent := camera.GetComponent(components.CameraComponentID).(*components.CameraComponent)
+		playerCamera := player.GetComponent(components.CameraComponentID).(*components.CameraComponent)
 
-		cameraComponent.X = playerPosition.TileX*config.TileSize - cameraComponent.Width/2
-		cameraComponent.Y = playerPosition.TileY*config.TileSize - cameraComponent.Height/2
+		playerCamera.X = playerPosition.TileX*config.TileSize - float64(config.RESOLUTION_WIDTH)/2
+		playerCamera.Y = playerPosition.TileY*config.TileSize - float64(config.RESOLUTION_HEIGHT)/2
 	}
 }

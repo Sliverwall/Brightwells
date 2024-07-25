@@ -1,5 +1,7 @@
 package entities
 
+import "Brightwells/components"
+
 type Entity struct {
 	ID          int                    // unique id to query entity by
 	Components  map[string]interface{} // components map to search for entity's components
@@ -53,6 +55,15 @@ func GetExistEntitySlice(entitySlice []*Entity) []*Entity {
 		}
 	}
 	return existEntitySlice
+}
+
+func GetPlayerEntity(entitySlice []*Entity) *Entity {
+	for _, entity := range entitySlice {
+		if entity.HasComponent(components.PlayerComponentID) {
+			return entity
+		}
+	}
+	return nil
 }
 
 // NewEntityWithComponents initializes a new entity with given components

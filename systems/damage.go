@@ -3,20 +3,18 @@ package systems
 import (
 	"Brightwells/components"
 	"Brightwells/entities"
-	"Brightwells/state"
-	"time"
 )
 
 type DamageSystem struct {
-	WorldInstance state.World
+	// WorldInstance state.World
 }
 
 func (ds *DamageSystem) Update(entitySlice []*entities.Entity) {
-	currentTime := time.Now()
-	if currentTime.Sub(ds.WorldInstance.LastTick) < ds.WorldInstance.UpdateInterval {
-		return // Not enough time has passed, skip update
-	}
-	ds.WorldInstance.LastTick = currentTime
+	// currentTime := time.Now()
+	// if currentTime.Sub(ds.WorldInstance.LastTick) < ds.WorldInstance.UpdateInterval {
+	// 	return // Not enough time has passed, skip update
+	// }
+	// ds.WorldInstance.LastTick = currentTime
 
 	for _, attacker := range entitySlice {
 		if attacker.HasComponent(components.AttackerComponentID) && attacker.HasComponent(components.SkillsComponentID) {

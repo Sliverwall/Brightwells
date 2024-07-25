@@ -4,21 +4,19 @@ import (
 	"Brightwells/components"
 	"Brightwells/config"
 	"Brightwells/entities"
-	"Brightwells/state"
 	"math"
-	"time"
 )
 
 type MovementSystem struct {
-	WorldInstance state.World
+	// WorldInstance state.World
 }
 
 func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
-	currentTime := time.Now()
-	if currentTime.Sub(ms.WorldInstance.LastTick) < ms.WorldInstance.UpdateInterval {
-		return // Not enough time has passed, skip update
-	}
-	ms.WorldInstance.LastTick = currentTime
+	// currentTime := time.Now()
+	// if currentTime.Sub(ms.WorldInstance.LastTick) < ms.WorldInstance.UpdateInterval {
+	// 	return // Not enough time has passed, skip update
+	// }
+	// ms.WorldInstance.LastTick = currentTime
 
 	for _, entity := range entitySlice {
 		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.VelocityComponentID) {

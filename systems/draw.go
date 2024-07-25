@@ -13,10 +13,10 @@ import (
 
 type DrawSystem struct{}
 
-func (ds *DrawSystem) Update(backgroundTiles []*entities.Entity, entitySlice []*entities.Entity, screen *ebiten.Image) {
+func (ds *DrawSystem) Update(backgroundTiles []*entities.Entity, entitySlice []*entities.Entity, screen *ebiten.Image, player *entities.Entity) {
 
 	// Draw background tiles first
-	ds.drawEntities(backgroundTiles, screen)
+	ds.drawEntities(backgroundTiles, screen, player)
 
 	// Sort entities by layer
 	sort.Slice(entitySlice, func(i, j int) bool {
@@ -24,18 +24,22 @@ func (ds *DrawSystem) Update(backgroundTiles []*entities.Entity, entitySlice []*
 	})
 
 	// Draw entities
-	ds.drawEntities(entitySlice, screen)
+	ds.drawEntities(entitySlice, screen, player)
 }
 
-func (ds *DrawSystem) drawEntities(entitySlice []*entities.Entity, screen *ebiten.Image) {
+func (ds *DrawSystem) drawEntities(entitySlice []*entities.Entity, screen *ebiten.Image, player *entities.Entity) {
 	for _, entity := range entitySlice {
 		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.SpriteComponentID) {
+			// Get entity compontents
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 			sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
 
+			// Get camera compontents
+			camera := player.GetComponent(components.CameraComponentID).(*components.CameraComponent)
+
 			// Calculate the actual position on the screen
-			actualX := math.Floor(position.TileX * config.TileSize)
-			actualY := math.Floor(position.TileY * config.TileSize)
+			actualX := math.Floor(position.TileX*config.TileSize - camera.X)
+			actualY := math.Floor(position.TileY*config.TileSize - camera.Y)
 			// Set the translation of the drawImage
 			opts := ebiten.DrawImageOptions{}
 			opts.GeoM.Translate(float64(actualX), actualY)
