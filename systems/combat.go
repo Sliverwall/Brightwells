@@ -5,17 +5,11 @@ import (
 	"Brightwells/entities"
 )
 
+// ------------------------------ DAMAGE SYSTEMS -------------------------------
 type DamageSystem struct {
-	// WorldInstance state.World
 }
 
 func (ds *DamageSystem) Update(entitySlice []*entities.Entity) {
-	// currentTime := time.Now()
-	// if currentTime.Sub(ds.WorldInstance.LastTick) < ds.WorldInstance.UpdateInterval {
-	// 	return // Not enough time has passed, skip update
-	// }
-	// ds.WorldInstance.LastTick = currentTime
-
 	for _, attacker := range entitySlice {
 		if attacker.HasComponent(components.AttackerComponentID) && attacker.HasComponent(components.SkillsComponentID) {
 			attackComponent := attacker.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
@@ -54,6 +48,34 @@ func (ds *DamageSystem) Update(entitySlice []*entities.Entity) {
 					}
 				}
 			}
+		}
+	}
+}
+
+// ------------------------------ DEATH SYSTEMS -------------------------------
+type DeathSystem struct{}
+
+// DeathSystem's update system handles killing entities.
+func (ds *DeathSystem) Update(entitySlice []*entities.Entity) {
+
+	for _, entity := range entitySlice {
+		// Skill component required to die, as it holds health stat
+		if !entity.HasComponent(components.SkillsComponentID) {
+			continue
+		}
+
+		skills := entity.GetComponent(components.SkillsComponentID).(*components.SkillsComponent)
+
+		// entity has died
+		if skills.CurrentHealth <= 0 {
+			// reset currentHealth back to max
+			skills.CurrentHealth = skills.Health
+
+			// Add loot system later
+
+			// Kill entity
+			entity.KillEntity()
+
 		}
 	}
 }

@@ -104,16 +104,13 @@ func main() {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	}
 
+	// Initialize background tiles and entities
 	tileSystem := &systems.TileSystem{
 		BackgroundMap: backgroundMap,
 		ForegroundMap: foregroundMap,
 		TileImages:    tileImages,
 	}
-
-	// Initialize background tiles and entities
 	backgroundTiles, entitySlice := tileSystem.InitializeTiles()
-	windowWidth := config.WINDOW_WIDTH
-	windowHeight := config.WINDOW_HEIGHT
 
 	// Init systems
 	collisionSystem := &systems.CollisionSystem{
@@ -127,24 +124,15 @@ func main() {
 		CollisionSystem:   collisionSystem,
 	}
 
-	movementSystem := &systems.MovementSystem{}
-	damageSystem := &systems.DamageSystem{}
-	drawSystem := &systems.DrawSystem{}
-	userInputSystem := &systems.UserInputSystem{}
-
 	game := &Game{
 		backgroundTiles:        backgroundTiles,
 		entitySlice:            entitySlice,
 		triggerCollisionSystem: triggerCollisionSystem,
 		collisionSystem:        collisionSystem,
-		movementSystem:         movementSystem,
-		drawSystem:             drawSystem,
-		userInputSystem:        userInputSystem,
-		damageSystem:           damageSystem,
 		tickManager:            systems.NewTickManager(300 * time.Millisecond),
 	}
 
-	ebiten.SetWindowSize(windowWidth, windowHeight)
+	ebiten.SetWindowSize(config.WINDOW_WIDTH, config.WINDOW_HEIGHT)
 	ebiten.SetWindowTitle("Brightwells")
 
 	// Set a fixed frame rate of 60 FPS

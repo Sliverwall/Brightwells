@@ -1,5 +1,18 @@
 package components
 
+const CameraComponentID = "CameraComponentID"
+
+type CameraComponent struct {
+	X, Y float64
+}
+
+// PlayerComponentID is the identifier for the PlayerComponent
+const PlayerComponentID = "PlayerComponent"
+
+type PlayerComponent struct {
+	// flags entity as player
+}
+
 const SkillsComponentID = "SkillsComponent"
 
 type SkillsComponent struct {

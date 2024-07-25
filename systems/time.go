@@ -2,6 +2,7 @@ package systems
 
 import "time"
 
+// ------------------------------ TICKMANAGER SYSTEMS -------------------------------
 type TickManager struct {
 	LastTick       time.Time
 	UpdateInterval time.Duration

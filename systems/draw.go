@@ -11,6 +11,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+// ------------------------------ DRAW SYSTEMS -------------------------------
 type DrawSystem struct{}
 
 func (ds *DrawSystem) Update(backgroundTiles []*entities.Entity, entitySlice []*entities.Entity, screen *ebiten.Image, player *entities.Entity) {
@@ -42,7 +43,7 @@ func (ds *DrawSystem) drawEntities(entitySlice []*entities.Entity, screen *ebite
 			actualY := math.Floor(position.TileY*config.TileSize - camera.Y)
 			// Set the translation of the drawImage
 			opts := ebiten.DrawImageOptions{}
-			opts.GeoM.Translate(float64(actualX), actualY)
+			opts.GeoM.Translate(actualX, actualY)
 
 			// Draw the image, ensuring the correct sub-image is selected
 			subImageRect := image.Rect(
@@ -55,5 +56,19 @@ func (ds *DrawSystem) drawEntities(entitySlice []*entities.Entity, screen *ebite
 
 			screen.DrawImage(subImage, &opts)
 		}
+	}
+}
+
+// ------------------------------ CAMERA SYSTEMS -------------------------------
+type CameraSystem struct{}
+
+func (cs *CameraSystem) Update(player *entities.Entity) {
+
+	if player != nil {
+		playerPosition := player.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+		playerCamera := player.GetComponent(components.CameraComponentID).(*components.CameraComponent)
+
+		playerCamera.X = playerPosition.TileX*config.TileSize - float64(config.RESOLUTION_WIDTH)/2
+		playerCamera.Y = playerPosition.TileY*config.TileSize - float64(config.RESOLUTION_HEIGHT)/2
 	}
 }
