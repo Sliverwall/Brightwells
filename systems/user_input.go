@@ -18,13 +18,12 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 		// Checks for players that have position and velocity
 		if entity.HasComponent(components.PlayerComponentID) {
 			// Get needed compontents
-			sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
+			// sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
 			camera := entity.GetComponent(components.CameraComponentID).(*components.CameraComponent)
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
 			destination := entity.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
 			attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
-			sprite.X, sprite.Y, sprite.X1, sprite.Y1 = 0, 0, 16, 16
 
 			// Log for debugging
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) {
@@ -82,6 +81,7 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			speed := 1.0
 			// Pathfinding
 			// X-axis
+
 			if position.TileX < destination.X {
 				velocity.VX = speed
 			} else if position.TileX > destination.X {
@@ -97,6 +97,7 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			} else if position.TileY == destination.Y {
 				velocity.VY = 0
 			}
+
 			// ----------Left click END---------
 		}
 	}

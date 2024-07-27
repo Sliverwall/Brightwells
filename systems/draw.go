@@ -45,16 +45,21 @@ func (ds *DrawSystem) drawEntities(entitySlice []*entities.Entity, screen *ebite
 			opts := ebiten.DrawImageOptions{}
 			opts.GeoM.Translate(actualX, actualY)
 
-			// Draw the image, ensuring the correct sub-image is selected
-			subImageRect := image.Rect(
-				sprite.X,
-				sprite.Y,
-				sprite.X+sprite.X1,
-				sprite.Y+sprite.Y1,
-			)
-			subImage := sprite.Image.SubImage(subImageRect).(*ebiten.Image)
-
-			screen.DrawImage(subImage, &opts)
+			// Use layer to determine if entity is background tile
+			if entity.RenderLayer == 0 {
+				// If background til, do not subdivide image.
+				screen.DrawImage(sprite.Image, &opts)
+			} else {
+				// Draw the image, ensuring the correct sub-image is selected
+				subImageRect := image.Rect(
+					sprite.X,
+					sprite.Y,
+					sprite.X1,
+					sprite.Y1,
+				)
+				subImage := sprite.Image.SubImage(subImageRect).(*ebiten.Image)
+				screen.DrawImage(subImage, &opts)
+			}
 		}
 	}
 }

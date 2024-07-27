@@ -9,7 +9,7 @@ import (
 )
 
 func NewTileEntity(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
-	entity := NewEntity(layer) // Ensure you have a NewEntity() function that initializes a new Entity.
+	entity := NewEntity(layer)
 	entity.AddComponent(components.PositionComponentID, &components.PositionComponent{
 		X:     posX,
 		Y:     posY,

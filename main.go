@@ -59,7 +59,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// Clear the screen
 	screen.Clear()
 	// Set primer background
-	screen.Fill(color.Opaque)
+	screen.Fill(color.Black)
 
 	// Draw the background tiles and entities using the draw system
 	g.drawSystem.Update(g.backgroundTiles, g.entitySlice, screen, g.player)
@@ -76,19 +76,8 @@ func main() {
 	// Load tiles
 	tileImages := systems.LoadTiles()
 
-	// Background tile map
-	backgroundMap := [][]int{
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	}
+	// Background map
+	backgroundMap := systems.ReadMap()
 
 	// Foreground entity map
 	foregroundMap := [][]int{
