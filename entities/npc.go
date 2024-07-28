@@ -8,7 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func NewNPC(posX, posY, velX, velY float64, sprite *ebiten.Image, layer int) *Entity {
+func NewNPC(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	entity := NewEntity(layer) // Ensure you have a NewEntity() function that initializes a new Entity.
 
 	// Spatial compontents
@@ -19,8 +19,8 @@ func NewNPC(posX, posY, velX, velY float64, sprite *ebiten.Image, layer int) *En
 		TileY: math.Round(posY / config.TileSize),
 	})
 	entity.AddComponent(components.VelocityComponentID, &components.VelocityComponent{
-		VX: velX,
-		VY: velY,
+		VX: 0,
+		VY: 0,
 	})
 
 	// Visual components

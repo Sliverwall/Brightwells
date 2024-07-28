@@ -9,7 +9,6 @@ import (
 
 // ------------------------------ COLLISION SYSTEMS -------------------------------
 type CollisionSystem struct {
-	GameMap [][]int
 }
 
 // CheckTileCollisions processes all entities and returns a map of collisions

@@ -20,7 +20,6 @@ type TileSystem struct {
 	BackgroundMap [][]int
 	ForegroundMap [][]int
 	TileImages    map[int]*ebiten.Image
-	TileSet       *ebiten.Image
 }
 
 func (ts *TileSystem) InitializeTiles() ([]*entities.Entity, []*entities.Entity) {
@@ -68,9 +67,9 @@ func (ts *TileSystem) InitializeTiles() ([]*entities.Entity, []*entities.Entity)
 
 			switch tile {
 			case -1:
-				entity = entities.NewPlayer(posX, posY, 0, 0, img, layer)
+				entity = entities.NewPlayer(posX, posY, img, layer)
 			case 1:
-				entity = entities.NewNPC(posX, posY, 0, 0, img, layer)
+				entity = entities.NewNPC(posX, posY, img, layer)
 			case 2:
 				entity = entities.NewApple(posX, posY, img, layer)
 			default:
@@ -114,8 +113,8 @@ func LoadTiles() map[int]*ebiten.Image {
 	return tileImages
 }
 
-func ReadMap() [][]int {
-	file, err := os.Open("assets/maps/map_1.csv")
+func ReadMap(filePath string) [][]int {
+	file, err := os.Open(filePath)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -148,6 +147,8 @@ func ReadMap() [][]int {
 	return result
 
 }
+
+// ------------------------------ PLACE ENTITY SYSTEMS -------------------------------
 
 // ------------------------------ SPRITE FUNCTIONS -------------------------------
 

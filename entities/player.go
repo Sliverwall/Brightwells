@@ -8,7 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func NewPlayer(posX, posY, velX, velY float64, sprite *ebiten.Image, layer int) *Entity {
+func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	// Create base entity
 	entity := NewEntity(layer)
 
@@ -28,7 +28,7 @@ func NewPlayer(posX, posY, velX, velY float64, sprite *ebiten.Image, layer int) 
 		TileX: math.Round(posX / config.TileSize),
 		TileY: math.Round(posY / config.TileSize),
 	})
-	entity.AddComponent(components.VelocityComponentID, &components.VelocityComponent{VX: velX, VY: velY})
+	entity.AddComponent(components.VelocityComponentID, &components.VelocityComponent{VX: 0, VY: 0})
 	entity.AddComponent(components.CollisionComponentID, &components.CollisionComponent{})
 	entity.AddComponent(components.CollisionBoxID, &components.CollisionBox{})
 

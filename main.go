@@ -2,9 +2,11 @@ package main
 
 import (
 	"Brightwells/config"
+	"Brightwells/data"
 	"Brightwells/entities"
 	"Brightwells/systems"
 	"image/color"
+	"log"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -31,7 +33,7 @@ type Game struct {
 func (g *Game) Update() error {
 
 	// Update entites
-	g.entitySlice = entities.GetExistEntitySlice(g.entitySlice)
+
 	// Always update user input for responsiveness
 	g.userInputSystem.Update(g.entitySlice)
 
@@ -47,6 +49,8 @@ func (g *Game) Update() error {
 		g.damageSystem.Update(g.entitySlice)
 		g.triggerCollisionSystem.Update(g.entitySlice)
 		g.deathSystem.Update(g.entitySlice)
+		// Reload onl yexisting entities
+		g.entitySlice = entities.GetExistEntitySlice(g.entitySlice)
 	}
 
 	// Always update camera for smooth following
@@ -73,11 +77,15 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 }
 
 func main() {
+
+	entitiesList := data.SQL_query(data.Select_all_place_entity)
+	log.Println(entitiesList)
+
 	// Load tiles
 	tileImages := systems.LoadTiles()
 
 	// Background map
-	backgroundMap := systems.ReadMap()
+	backgroundMap := systems.ReadMap("assets/maps/map_1.csv")
 
 	// Foreground entity map
 	foregroundMap := [][]int{
@@ -102,9 +110,7 @@ func main() {
 	backgroundTiles, entitySlice := tileSystem.InitializeTiles()
 
 	// Init systems
-	collisionSystem := &systems.CollisionSystem{
-		GameMap: foregroundMap,
-	}
+	collisionSystem := &systems.CollisionSystem{}
 
 	foodRespawnSystem := &systems.FoodRespawnSystem{}
 
@@ -113,7 +119,10 @@ func main() {
 		CollisionSystem:   collisionSystem,
 	}
 
+	// Load player in
+	player := entities.GetPlayerEntity(entitySlice)
 	game := &Game{
+		player:                 player,
 		backgroundTiles:        backgroundTiles,
 		entitySlice:            entitySlice,
 		triggerCollisionSystem: triggerCollisionSystem,
