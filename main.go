@@ -78,34 +78,23 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 
 func main() {
 
-	entitiesList := data.SQL_query(data.Select_all_place_entity)
+	entitiesList := data.SQL_query(data.Select_all_NPC)
 	log.Println(entitiesList)
 
 	// Load tiles
-	tileImages := systems.LoadTiles()
+	spriteImages := entities.LoadSprites()
 
 	// Background map
 	backgroundMap := systems.ReadMap("assets/maps/map_1.csv")
 
 	// Foreground entity map
-	foregroundMap := [][]int{
-		{-1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 1, 0, 1, 0, 0, 0, 0},
-		{0, 0, 0, 2, 0, 1, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 1, 0, 1, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 2, 2, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	}
+	foregroundMap := data.SQL_query(data.Select_all_NPC) //Just all npcs for now
 
 	// Initialize background tiles and entities
 	tileSystem := &systems.TileSystem{
 		BackgroundMap: backgroundMap,
 		ForegroundMap: foregroundMap,
-		TileImages:    tileImages,
+		SpriteImages:  spriteImages,
 	}
 	backgroundTiles, entitySlice := tileSystem.InitializeTiles()
 

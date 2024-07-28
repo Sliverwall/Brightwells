@@ -8,15 +8,15 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func NewNPC(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
+func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	entity := NewEntity(layer) // Ensure you have a NewEntity() function that initializes a new Entity.
 
 	// Spatial compontents
 	entity.AddComponent(components.PositionComponentID, &components.PositionComponent{
-		X:     posX,
-		Y:     posY,
-		TileX: math.Round(posX / config.TileSize),
-		TileY: math.Round(posY / config.TileSize),
+		X:     math.Floor(posX * config.TileSize),
+		Y:     math.Floor(posY * config.TileSize),
+		TileX: posX,
+		TileY: posY,
 	})
 	entity.AddComponent(components.VelocityComponentID, &components.VelocityComponent{
 		VX: 0,

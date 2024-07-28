@@ -11,10 +11,10 @@ import (
 func NewTileEntity(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	entity := NewEntity(layer)
 	entity.AddComponent(components.PositionComponentID, &components.PositionComponent{
-		X:     posX,
-		Y:     posY,
-		TileX: math.Round(posX / config.TileSize),
-		TileY: math.Round(posY / config.TileSize),
+		X:     math.Floor(posX * config.TileSize),
+		Y:     math.Floor(posY * config.TileSize),
+		TileX: posX,
+		TileY: posY,
 	})
 	entity.AddComponent(components.SpriteComponentID, &components.SpriteComponent{
 		Image: sprite,

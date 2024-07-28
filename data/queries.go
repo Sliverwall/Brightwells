@@ -4,5 +4,5 @@ package data
 
 var (
 	// Select statements
-	Select_all_place_entity string = `SELECT * FROM place_entity`
+	Select_all_NPC string = `SELECT * FROM NPC`
 )
