@@ -55,11 +55,11 @@ func (ts *TileSystem) InitializeTiles() ([]*entities.Entity, []*entities.Entity)
 	// Initialize foreground entities
 	for _, row := range ts.ForegroundMap {
 		// Grab needed features from tuple. Type assertion as grabbing from interface{}
-		npc_id := int(row[0].(int64))
-		x := float64(row[2].(int64))
-		y := float64(row[3].(int64))
-		sprite_id := int(row[4].(int64))
-		layer := int(row[5].(int64))
+		npc_id := int(row[1].(int64))
+		x := float64(row[3].(int64))
+		y := float64(row[4].(int64))
+		sprite_id := int(row[5].(int64))
+		layer := int(row[6].(int64))
 
 		img, ok := ts.SpriteImages[sprite_id]
 		if !ok {
