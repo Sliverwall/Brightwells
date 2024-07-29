@@ -19,11 +19,37 @@ type SkillsComponent struct {
 	// Skill section
 	CurrentHealth int // keeps track of health that can be damaged
 	Health        int
-	Attack        int
-	Strength      int
-	Defence       int
-	Range         int
-	Prayer        int
-	Magic         int
-	Woodcutting   int
+	Health_exp    int
+
+	CurrentMelee int
+	Melee        int
+	Melee_exp    int
+
+	CurrentDefense int
+	Defense        int
+	Defense_exp    int
+
+	CurrentArchery int
+	Archery        int
+	Archery_exp    int
+
+	CurrentDevotion int
+	Devotion        int
+	Devotion_exp    int
+
+	CurrentMagicka int
+	Magicka        int
+	Magicka_exp    int
+
+	CurrentLumbering int
+	Lumbering        int
+	Lumbering_exp    int
+
+	CurrentAlchemy int
+	Alchemy        int
+	Alchemy_exp    int
+
+	CurrentHunter int
+	Hunter        int
+	Hunter_exp    int
 }

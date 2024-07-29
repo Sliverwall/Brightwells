@@ -8,6 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+// Id = 1
 func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	// Create base entity
 	entity := NewEntity(layer)
@@ -50,9 +51,9 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	entity.AddComponent(components.SkillsComponentID, &components.SkillsComponent{
 		CurrentHealth: 15,
 		Health:        15,
-		Attack:        5,
-		Strength:      5,
-		Defence:       5,
+		Melee:         5,
+		Defense:       5,
+		Devotion:      5,
 	})
 	return entity
 }
