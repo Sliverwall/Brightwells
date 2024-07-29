@@ -82,7 +82,7 @@ func main() {
 	log.Println(entitiesList)
 
 	// Load tiles
-	spriteImages := entities.LoadSprites()
+	spriteImages := systems.LoadSprites()
 
 	// Background map
 	backgroundMap := systems.ReadMap("assets/maps/map_1.csv")

@@ -67,7 +67,7 @@ func (ts *TileSystem) InitializeTiles() ([]*entities.Entity, []*entities.Entity)
 		}
 
 		// Construct entity based on npc_id
-		entity := entities.SpawnEntity(npc_id, x, y, img, layer)
+		entity := SpawnEntity(npc_id, x, y, img, layer)
 
 		// Place entity in world
 		entitySlice = append(entitySlice, entity)
@@ -111,6 +111,50 @@ func ReadMap(filePath string) [][]int {
 }
 
 // ------------------------------ PLACE ENTITY SYSTEMS -------------------------------
+
+// Initialize entites using unique ID
+
+func SpawnEntity(npcID int, posX, posY float64, img *ebiten.Image, layer int) *entities.Entity {
+
+	// Use NewEntity functions to spawn entites
+	var entity *entities.Entity
+	switch npcID {
+	case 1:
+		entity = entities.NewPlayer(posX, posY, img, layer)
+	case 2:
+		entity = entities.NewMonsterGirl(posX, posY, img, layer)
+	}
+
+	return entity
+}
+
+// Map sprite_id to sprite
+func LoadSprites() map[int]*ebiten.Image {
+	player_default, _, err := ebitenutil.NewImageFromFile("assets/images/eggBoy.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	monsterGirl, _, err := ebitenutil.NewImageFromFile("assets/images/caveGirl.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	appleSprite, _, err := ebitenutil.NewImageFromFile("assets/images/apple.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Map sprite_id to their corresponding images
+	spriteImages := map[int]*ebiten.Image{
+		1: player_default,
+		2: monsterGirl,
+		3: appleSprite,
+		// Add more tile types and their images here
+	}
+
+	return spriteImages
+}
 
 // ------------------------------ SPRITE FUNCTIONS -------------------------------
 

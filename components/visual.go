@@ -22,12 +22,13 @@ type RenderComponent struct {
 
 // ShapeComponentID is the identifier for the ShapeComponent
 const ShapeComponentID = "ShapeComponent"
-const ShapeColorComponentID = "ShapeColorComponentID"
 
 type ShapeComponent struct {
 	Height, Width float64
 	Geometry      string
 }
+
+const ShapeColorComponentID = "ShapeColorComponentID"
 
 type ShapeColorComponent struct {
 	// RGBA units for shape's color
