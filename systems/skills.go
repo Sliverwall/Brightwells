@@ -12,24 +12,24 @@ type ResourceNodeSystem struct {
 }
 
 func (ls *ResourceNodeSystem) Update(entitySlice []*entities.Entity) {
-	for _, player := range entitySlice {
-		if player.HasComponent(components.PlayerComponentID) {
+	for _, gather := range entitySlice {
+		if gather.HasComponent(components.GatherComponentID) {
 			// Gather gather compontent
-			gatherComponent := player.GetComponent(components.GatherComponentID).(*components.GatherComponent)
+			gatherComponent := gather.GetComponent(components.GatherComponentID).(*components.GatherComponent)
 			// Check if target is not set to none (-1)
 			if gatherComponent.Target != -1 {
 				// Get skill component before going into next loop
-				// skillComponent := player.GetComponent(components.SkillsComponentID).(*components.SkillsComponent)
+				// skillComponent := gather.GetComponent(components.SkillsComponentID).(*components.SkillsComponent)
 				targetID := gatherComponent.Target
 				for _, target := range entitySlice {
-					if target.ID == targetID && target.HasComponent(components.ResourceNodeComponentID) && target.ID != player.ID {
+					if target.ID == targetID && target.HasComponent(components.ResourceNodeComponentID) && target.ID != gather.ID {
 						// Check if near node before begining checks
-						if IsWithinOneTile(player, target) {
-							// Reset player's destination tile to current tile after reaching target
-							playerDestination := player.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
-							playerPosition := player.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+						if IsWithinOneTile(gather, target) {
+							// Reset gather's destination tile to current tile after reaching target
+							gatherDestination := gather.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
+							gatherPosition := gather.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 
-							playerDestination.X, playerDestination.Y = playerPosition.TileX, playerPosition.TileY
+							gatherDestination.X, gatherDestination.Y = gatherPosition.TileX, gatherPosition.TileY
 
 							// Check active tag
 							resourceCompontent := target.GetComponent(components.ResourceNodeComponentID).(*components.ResourceNodeComponent)
@@ -39,7 +39,7 @@ func (ls *ResourceNodeSystem) Update(entitySlice []*entities.Entity) {
 								gatherComponent.Target = -1
 								break
 							}
-							// flag player as Gathering
+							// flag gather as Gathering
 							gatherComponent.IsGathering = true
 
 							roll := rand.Float32()
@@ -48,7 +48,7 @@ func (ls *ResourceNodeSystem) Update(entitySlice []*entities.Entity) {
 							if roll <= resourceCompontent.DrainedChance {
 								// Set active flag to false
 								resourceCompontent.Active = false
-								// Reset player status for the player
+								// Reset gather status for the gather
 								gatherComponent.IsGathering = false
 								gatherComponent.Target = -1
 								// Leave loop

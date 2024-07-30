@@ -6,6 +6,13 @@ import (
 	"log"
 )
 
+// ------------------------------ Inventory SYSTEMS -------------------------------
+type InventorySystem struct{}
+
+func (is *InventorySystem) Update(player *entities.Entity) {
+	log.Panicln("Inventory")
+}
+
 // ------------------------------ FOOD SYSTEMS -------------------------------
 type FoodRespawnSystem struct {
 }

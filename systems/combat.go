@@ -6,8 +6,7 @@ import (
 )
 
 // ------------------------------ DAMAGE SYSTEMS -------------------------------
-type DamageSystem struct {
-}
+type DamageSystem struct{}
 
 func (ds *DamageSystem) Update(entitySlice []*entities.Entity) {
 	for _, attacker := range entitySlice {
@@ -17,9 +16,13 @@ func (ds *DamageSystem) Update(entitySlice []*entities.Entity) {
 				targetID := attackComponent.Target
 				for _, target := range entitySlice {
 					if target.ID == targetID && target.HasComponent(components.SkillsComponentID) && target.HasComponent(components.DamageComponentID) && target.ID != attacker.ID {
+						// Grab desition and position compontent from attacker and target to keep adjusting destination position
+						targetPosition := target.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+						attackerDestination := attacker.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
+						// Keep updating attacker position to follow target if both are moving
+						attackerDestination.X, attackerDestination.Y = targetPosition.TileX, targetPosition.TileY
 						if IsWithinOneTile(attacker, target) {
 							// Reset attacker's destination tile to current tile after reaching target
-							attackerDestination := attacker.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
 							attackerPosition := attacker.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 
 							attackerDestination.X, attackerDestination.Y = attackerPosition.TileX, attackerPosition.TileY

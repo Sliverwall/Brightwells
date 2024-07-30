@@ -17,7 +17,7 @@ func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity
 	})
 	entity.AddComponent(components.VelocityComponentID, &components.VelocityComponent{
 		VX: 0,
-		VY: 0,
+		VY: 1.0,
 	})
 
 	// Visual components
