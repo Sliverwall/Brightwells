@@ -6,7 +6,6 @@ import (
 	"Brightwells/entities"
 	"Brightwells/systems"
 	"image/color"
-	"log"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -28,6 +27,7 @@ type Game struct {
 	damageSystem    *systems.DamageSystem
 	cameraSystem    *systems.CameraSystem
 	tickManager     *systems.TickManager
+	resourceNode    *systems.ResourceNodeSystem
 }
 
 func (g *Game) Update() error {
@@ -49,6 +49,8 @@ func (g *Game) Update() error {
 		g.damageSystem.Update(g.entitySlice)
 		g.triggerCollisionSystem.Update(g.entitySlice)
 		g.deathSystem.Update(g.entitySlice)
+		// Skill systems
+		g.resourceNode.Update(g.entitySlice)
 		// Reload onl yexisting entities
 		g.entitySlice = entities.GetExistEntitySlice(g.entitySlice)
 	}
@@ -77,23 +79,20 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 }
 
 func main() {
+	// Load Entity Sprites
+	spriteMap := data.SQL_query(data.Select_all_Sprite)
+	spriteImages := systems.LoadSprites(spriteMap)
 
-	entitiesList := data.SQL_query(data.Select_all_NPC)
-	log.Println(entitiesList)
-
-	// Load tiles
-	spriteImages := systems.LoadSprites()
-
-	// Background map
+	// Load Background map
 	backgroundMap := systems.ReadMap("assets/maps/map_1.csv")
 
-	// Foreground entity map
-	foregroundMap := data.SQL_query(data.Select_all_NPC) //Just all npcs for now
+	// Load Entity map
+	entityMap := data.SQL_query(data.Select_all_Entity) // Any non-tile
 
 	// Initialize background tiles and entities
 	tileSystem := &systems.TileSystem{
 		BackgroundMap: backgroundMap,
-		ForegroundMap: foregroundMap,
+		EntityMap:     entityMap,
 		SpriteImages:  spriteImages,
 	}
 	backgroundTiles, entitySlice := tileSystem.InitializeTiles()

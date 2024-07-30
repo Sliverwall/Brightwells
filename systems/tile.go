@@ -17,7 +17,7 @@ import (
 
 type TileSystem struct {
 	BackgroundMap [][]int
-	ForegroundMap [][]interface{}
+	EntityMap     [][]interface{}
 	SpriteImages  map[int]*ebiten.Image
 }
 
@@ -53,7 +53,7 @@ func (ts *TileSystem) InitializeTiles() ([]*entities.Entity, []*entities.Entity)
 	}
 
 	// Initialize foreground entities
-	for _, row := range ts.ForegroundMap {
+	for _, row := range ts.EntityMap {
 		// Grab needed features from tuple. Type assertion as grabbing from interface{}
 		npc_id := int(row[1].(int64))
 		x := float64(row[3].(int64))
@@ -123,34 +123,26 @@ func SpawnEntity(npcID int, posX, posY float64, img *ebiten.Image, layer int) *e
 		entity = entities.NewPlayer(posX, posY, img, layer)
 	case 2:
 		entity = entities.NewMonsterGirl(posX, posY, img, layer)
+	case 4:
+		entity = entities.NewTree(posX, posY, img, layer)
 	}
 
 	return entity
 }
 
-// Map sprite_id to sprite
-func LoadSprites() map[int]*ebiten.Image {
-	player_default, _, err := ebitenutil.NewImageFromFile("assets/images/eggBoy.png")
-	if err != nil {
-		log.Fatal(err)
-	}
+// Map sprite_id to sprite using Sprite table to provide id and file path
+func LoadSprites(SpriteList [][]interface{}) map[int]*ebiten.Image {
 
-	monsterGirl, _, err := ebitenutil.NewImageFromFile("assets/images/caveGirl.png")
-	if err != nil {
-		log.Fatal(err)
-	}
+	spriteImages := map[int]*ebiten.Image{}
+	for _, row := range SpriteList {
+		sprite_id := int(row[0].(int64))
+		filePath := row[1].(string)
 
-	appleSprite, _, err := ebitenutil.NewImageFromFile("assets/images/apple.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Map sprite_id to their corresponding images
-	spriteImages := map[int]*ebiten.Image{
-		1: player_default,
-		2: monsterGirl,
-		3: appleSprite,
-		// Add more tile types and their images here
+		loadedSprite, _, err := ebitenutil.NewImageFromFile(filePath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		spriteImages[sprite_id] = loadedSprite
 	}
 
 	return spriteImages

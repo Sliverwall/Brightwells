@@ -24,6 +24,7 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
 			destination := entity.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
 			attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
+			gather := entity.GetComponent(components.GatherComponentID).(*components.GatherComponent)
 
 			// Log for debugging
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) {
@@ -38,14 +39,18 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 				checkEntityID := CheckTileForEntity(checkTileX, checkTileY, entitySlice)
 
 				// check if there is no entity
-				if checkEntityID != -1 {
+				if checkEntityID != -1 && checkEntityID != entity.ID {
 					targetEntity := entities.GetEntityByID(entitySlice, checkEntityID)
 
 					// Use target's ID to get entities compontents
 					targetEntityPosition := targetEntity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 
 					// Set player's target id to entity clicked
-					attacker.Target = checkEntityID
+					if targetEntity.HasComponent(components.DamageComponentID) { // Check if entity is attackable
+						attacker.Target = checkEntityID
+					} else if targetEntity.HasComponent(components.ResourceNodeComponentID) { // Check if entity is gatherable
+						gather.Target = checkEntityID
+					}
 
 					// Set coords to start moving to be target's current tile
 					destX, destY := targetEntityPosition.TileX, targetEntityPosition.TileY
@@ -58,10 +63,14 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 
 			// ----------Left click START---------
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-				// Check if player is attacking, then turn off target and attacking
+				// Check if player is doing target attach, then turn off that action
 				if attacker.IsAttacking {
 					attacker.Target = -1
 					attacker.IsAttacking = false
+				}
+				if gather.IsGathering {
+					gather.Target = -1
+					gather.IsGathering = false
 				}
 				// Capture x,y vector clicked on
 				x, y := ebiten.CursorPosition()

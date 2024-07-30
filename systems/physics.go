@@ -2,9 +2,7 @@ package systems
 
 import (
 	"Brightwells/components"
-	"Brightwells/config"
 	"Brightwells/entities"
-	"math"
 )
 
 // ------------------------------ COLLISION SYSTEMS -------------------------------
@@ -81,15 +79,11 @@ func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
 			// Calculate movement for this frame
 			futureTileX := position.TileX + velocity.VX
 			futureTileY := position.TileY + velocity.VY
-			futurePositionX := math.Floor(futureTileX * config.TileSize)
-			futurePositionY := math.Floor(futureTileY * config.TileSize)
 
 			if !entity.HasComponent(components.CollisionBoxID) {
 				// No need to check collision boxes, Move to the next tile
 				position.TileX = futureTileX
 				position.TileY = futureTileY
-				position.X = futurePositionX
-				position.Y = futurePositionY
 				return
 			}
 
@@ -101,8 +95,6 @@ func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
 				// Move to the next tile
 				position.TileX = futureTileX
 				position.TileY = futureTileY
-				position.X = futurePositionX
-				position.Y = futurePositionY
 			}
 		}
 	}

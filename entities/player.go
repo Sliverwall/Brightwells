@@ -2,8 +2,6 @@ package entities
 
 import (
 	"Brightwells/components"
-	"Brightwells/config"
-	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -24,8 +22,6 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 
 	// Physics components
 	entity.AddComponent(components.PositionComponentID, &components.PositionComponent{
-		X:     math.Floor(posX * config.TileSize),
-		Y:     math.Floor(posY * config.TileSize),
 		TileX: posX,
 		TileY: posY,
 	})
@@ -55,5 +51,10 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 		Defense:       5,
 		Devotion:      5,
 	})
+
+	// Resource components
+	entity.AddComponent(components.GatherComponentID, &components.GatherComponent{IsGathering: false, Target: -1})
+
 	return entity
+
 }
