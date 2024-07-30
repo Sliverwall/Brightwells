@@ -18,17 +18,18 @@ func (ls *ResourceNodeSystem) Update(entitySlice []*entities.Entity) {
 			gatherComponent := gather.GetComponent(components.GatherComponentID).(*components.GatherComponent)
 			// Check if target is not set to none (-1)
 			if gatherComponent.Target != -1 {
-				// Get skill component before going into next loop
-				// skillComponent := gather.GetComponent(components.SkillsComponentID).(*components.SkillsComponent)
 				targetID := gatherComponent.Target
 				for _, target := range entitySlice {
 					if target.ID == targetID && target.HasComponent(components.ResourceNodeComponentID) && target.ID != gather.ID {
+						// Grab desition and position compontent from attacker and target to keep adjusting destination position
+						gatherDestination := gather.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
+						targetPosition := target.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+						// Keep updating gather position to follow target if both are moving
+						gatherDestination.X, gatherDestination.Y = targetPosition.TileX, targetPosition.TileY
 						// Check if near node before begining checks
 						if IsWithinOneTile(gather, target) {
 							// Reset gather's destination tile to current tile after reaching target
-							gatherDestination := gather.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
 							gatherPosition := gather.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-
 							gatherDestination.X, gatherDestination.Y = gatherPosition.TileX, gatherPosition.TileY
 
 							// Check active tag

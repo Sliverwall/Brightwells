@@ -41,10 +41,6 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 				// check if there is no entity
 				if checkEntityID != -1 && checkEntityID != entity.ID {
 					targetEntity := entities.GetEntityByID(entitySlice, checkEntityID)
-
-					// Use target's ID to get entities compontents
-					targetEntityPosition := targetEntity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-
 					// Set player's target id to entity clicked
 					if targetEntity.HasComponent(components.DamageComponentID) { // Check if entity is attackable
 						attacker.Target = checkEntityID
@@ -52,11 +48,6 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 						gather.Target = checkEntityID
 					}
 
-					// Set coords to start moving to be target's current tile
-					destX, destY := targetEntityPosition.TileX, targetEntityPosition.TileY
-
-					destination.X = destX
-					destination.Y = destY
 					log.Print(checkEntityID)
 				}
 			}
@@ -64,11 +55,11 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			// ----------Left click START---------
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 				// Check if player is doing target attach, then turn off that action
-				if attacker.IsAttacking {
+				if attacker.Target != -1 {
 					attacker.Target = -1
 					attacker.IsAttacking = false
 				}
-				if gather.IsGathering {
+				if gather.Target != -1 {
 					gather.Target = -1
 					gather.IsGathering = false
 				}
