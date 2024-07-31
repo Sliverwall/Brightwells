@@ -50,8 +50,7 @@ func (cs *CollisionSystem) isOnSameTile(X1, Y1, X2, Y2 float64) bool {
 
 // ----- TRIGGER COLLISIONS--------
 type TriggerCollisionSystem struct {
-	FoodRespawnSystem *FoodRespawnSystem
-	CollisionSystem   *CollisionSystem
+	CollisionSystem *CollisionSystem
 }
 
 // TriggerCollisionSystem Update handles firing collision affects
@@ -61,21 +60,37 @@ func (tcs *TriggerCollisionSystem) Update(entitySlice []*entities.Entity) {
 
 	// Handle collision functions here
 
-	tcs.FoodRespawnSystem.FoodCollide(entitySlice, collisions) // Dropped food effect
+	tcs.FoodCollide(entitySlice, collisions) // Dropped food effect
 }
 
 // ------------------------------ MOVEMENT SYSTEMS -------------------------------
-type MovementSystem struct {
-}
 
-func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
+func UpdateMovement(entitySlice []*entities.Entity) {
 
 	for _, entity := range entitySlice {
-		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.VelocityComponentID) {
+		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.VelocityComponentID) && entity.HasComponent(components.DestinationComponentID) {
 			// Update position based on velocity
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
-
+			destination := entity.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
+			// Control movement
+			speed := 1.0
+			// Pathfinding
+			if position.TileX < destination.X {
+				velocity.VX = speed
+			} else if position.TileX > destination.X {
+				velocity.VX = -speed
+			} else if position.TileX == destination.X {
+				velocity.VX = 0
+			}
+			// Y-axis
+			if position.TileY < destination.Y {
+				velocity.VY = speed
+			} else if position.TileY > destination.Y {
+				velocity.VY = -speed
+			} else if position.TileY == destination.Y {
+				velocity.VY = 0
+			}
 			// Calculate movement for this frame
 			futureTileX := position.TileX + velocity.VX
 			futureTileY := position.TileY + velocity.VY
@@ -96,6 +111,7 @@ func (ms *MovementSystem) Update(entitySlice []*entities.Entity) {
 				position.TileX = futureTileX
 				position.TileY = futureTileY
 			}
+
 		}
 	}
 }

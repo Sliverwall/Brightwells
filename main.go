@@ -21,10 +21,8 @@ type Game struct {
 	triggerCollisionSystem *systems.TriggerCollisionSystem
 
 	stateSystem     *systems.StateSystem
-	movementSystem  *systems.MovementSystem
 	drawSystem      *systems.DrawSystem
 	userInputSystem *systems.UserInputSystem
-	deathSystem     systems.DeathSystem
 	cameraSystem    *systems.CameraSystem
 	tickManager     *systems.TickManager
 }
@@ -44,9 +42,9 @@ func (g *Game) Update() error {
 	// Check if it's time for a tick update
 	if g.tickManager.ShouldUpdate() {
 		// Update systems that should be tick-based
-		g.movementSystem.Update(g.entitySlice)
+		systems.UpdateMovement(g.entitySlice)
 		g.triggerCollisionSystem.Update(g.entitySlice)
-		g.deathSystem.Update(g.entitySlice)
+		systems.UpdateDeath(g.entitySlice)
 		// Update state
 		g.stateSystem.Update(g.entitySlice)
 		// Reload onl yexisting entities
@@ -98,11 +96,8 @@ func main() {
 	// Init systems
 	collisionSystem := &systems.CollisionSystem{}
 
-	foodRespawnSystem := &systems.FoodRespawnSystem{}
-
 	triggerCollisionSystem := &systems.TriggerCollisionSystem{
-		FoodRespawnSystem: foodRespawnSystem,
-		CollisionSystem:   collisionSystem,
+		CollisionSystem: collisionSystem,
 	}
 
 	// Load player in

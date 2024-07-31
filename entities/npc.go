@@ -17,8 +17,9 @@ func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity
 	})
 	entity.AddComponent(components.VelocityComponentID, &components.VelocityComponent{
 		VX: 0,
-		VY: 1.0,
+		VY: 0,
 	})
+	entity.AddComponent(components.DestinationComponentID, &components.DestinationComponent{X: posX, Y: posY})
 
 	// Visual components
 	entity.AddComponent(components.SpriteComponentID, &components.SpriteComponent{
@@ -31,9 +32,16 @@ func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity
 	entity.AddComponent(components.CollisionBoxID, &components.CollisionBox{})
 
 	// Combat compontents
-	entity.AddComponent(components.AttackerComponentID, &components.AttackerComponent{
-		Target: -1,
+
+	// Give state
+	entity.AddComponent(components.StateComponentID, &components.StateComponent{
+		CurrentState: 0,
+		NextState:    1,
 	})
+	entity.AddComponent(components.AttackerComponentID, &components.AttackerComponent{
+		Target: 8001,
+	})
+
 	entity.AddComponent(components.DamageComponentID, &components.DamageComponent{})
 	entity.AddComponent(components.SkillsComponentID, &components.SkillsComponent{
 		CurrentHealth: 15,

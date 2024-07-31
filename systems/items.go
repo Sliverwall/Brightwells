@@ -14,11 +14,7 @@ func (is *InventorySystem) Update(player *entities.Entity) {
 }
 
 // ------------------------------ FOOD SYSTEMS -------------------------------
-type FoodRespawnSystem struct {
-}
-
-func (frs *FoodRespawnSystem) FoodCollide(entitySlice []*entities.Entity, collisions map[int][]int) {
-
+func (tcs *TriggerCollisionSystem) FoodCollide(entitySlice []*entities.Entity, collisions map[int][]int) {
 	for entityID := range collisions {
 		entity := entities.GetEntityByID(entitySlice, entityID)
 		if entity.HasComponent(components.FoodComponentID) {

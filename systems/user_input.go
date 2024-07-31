@@ -20,8 +20,6 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			// Get needed compontents
 			// sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
 			camera := entity.GetComponent(components.CameraComponentID).(*components.CameraComponent)
-			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
 			destination := entity.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
 			state := entity.GetComponent(components.StateComponentID).(*components.StateComponent)
 			attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
@@ -74,27 +72,6 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 				destination.Y = math.Floor(destY)
 				log.Print("Clicked tileX,tileY: ", destination.X, destination.Y)
 			}
-			// Control movement
-			speed := 1.0
-			// Pathfinding
-			// X-axis
-
-			if position.TileX < destination.X {
-				velocity.VX = speed
-			} else if position.TileX > destination.X {
-				velocity.VX = -speed
-			} else if position.TileX == destination.X {
-				velocity.VX = 0
-			}
-			// Y-axis
-			if position.TileY < destination.Y {
-				velocity.VY = speed
-			} else if position.TileY > destination.Y {
-				velocity.VY = -speed
-			} else if position.TileY == destination.Y {
-				velocity.VY = 0
-			}
-
 			// ----------Left click END---------
 		}
 	}

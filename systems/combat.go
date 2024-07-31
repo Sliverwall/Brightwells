@@ -7,13 +7,14 @@ import (
 
 // ------------------------------ DAMAGE SYSTEMS -------------------------------
 
+// State for handling attacking.
 func (ss *StateSystem) HandleAttacking(attacker *entities.Entity, entitySlice []*entities.Entity) {
-	if attacker.HasComponent(components.AttackerComponentID) && attacker.HasComponent(components.SkillsComponentID) {
+	if attacker.HasComponent(components.AttackerComponentID) {
 		attackComponent := attacker.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
 		if attackComponent.Target != -1 {
 			targetID := attackComponent.Target
 			for _, target := range entitySlice {
-				if target.ID == targetID && target.HasComponent(components.SkillsComponentID) && target.HasComponent(components.DamageComponentID) && target.ID != attacker.ID {
+				if target.ID == targetID && target.HasComponent(components.DamageComponentID) && target.ID != attacker.ID {
 					// Grab desition and position compontent from attacker and target to keep adjusting destination position
 					targetPosition := target.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 					attackerDestination := attacker.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
@@ -34,10 +35,11 @@ func (ss *StateSystem) HandleAttacking(attacker *entities.Entity, entitySlice []
 						targetSkills.CurrentHealth -= damage
 
 						// Ensure health does not go below zero
-						if targetSkills.CurrentHealth < 0 {
-							targetSkills.CurrentHealth = 0
+						if targetSkills.CurrentHealth <= 0 {
 							// Reset attack status for the attacker
 							attackComponent.Target = -1
+							// Set next state to idle
+							attacker.GetComponent(components.StateComponentID).(*components.StateComponent).NextState = 0
 						}
 
 						// Print damage dealt for debugging
@@ -50,10 +52,8 @@ func (ss *StateSystem) HandleAttacking(attacker *entities.Entity, entitySlice []
 }
 
 // ------------------------------ DEATH SYSTEMS -------------------------------
-type DeathSystem struct{}
-
 // DeathSystem's update system handles killing entities.
-func (ds *DeathSystem) Update(entitySlice []*entities.Entity) {
+func UpdateDeath(entitySlice []*entities.Entity) {
 
 	for _, entity := range entitySlice {
 		// Skill component required to die, as it holds health stat

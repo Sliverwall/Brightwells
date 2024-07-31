@@ -34,6 +34,8 @@ func (ss *StateSystem) HandleGathering(gather *entities.Entity, entitySlice []*e
 						if !resourceCompontent.Active {
 							log.Println("Resource depleted...")
 							gatherComponent.Target = -1
+							// Set next state to idle
+							gather.GetComponent(components.StateComponentID).(*components.StateComponent).NextState = 0
 							break
 						}
 						roll := rand.Float32()
@@ -45,6 +47,8 @@ func (ss *StateSystem) HandleGathering(gather *entities.Entity, entitySlice []*e
 							// Reset gather status for the gather
 							gatherComponent.Target = -1
 							// Leave loop
+							// Set next state to idle
+							gather.GetComponent(components.StateComponentID).(*components.StateComponent).NextState = 0
 							break
 						}
 					}
