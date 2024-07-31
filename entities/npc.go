@@ -32,8 +32,7 @@ func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity
 
 	// Combat compontents
 	entity.AddComponent(components.AttackerComponentID, &components.AttackerComponent{
-		IsAttacking: false,
-		Target:      -1,
+		Target: -1,
 	})
 	entity.AddComponent(components.DamageComponentID, &components.DamageComponent{})
 	entity.AddComponent(components.SkillsComponentID, &components.SkillsComponent{

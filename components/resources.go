@@ -17,6 +17,5 @@ type ResourceNodeComponent struct {
 const GatherComponentID = "GatherComponent"
 
 type GatherComponent struct {
-	IsGathering bool
-	Target      int // entity ID of thing being gathered
+	Target int // entity ID of thing being gathered
 }

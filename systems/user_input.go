@@ -23,6 +23,7 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
 			destination := entity.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
+			state := entity.GetComponent(components.StateComponentID).(*components.StateComponent)
 			attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
 			gather := entity.GetComponent(components.GatherComponentID).(*components.GatherComponent)
 
@@ -43,8 +44,10 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 					targetEntity := entities.GetEntityByID(entitySlice, checkEntityID)
 					// Set player's target id to entity clicked
 					if targetEntity.HasComponent(components.DamageComponentID) { // Check if entity is attackable
+						state.NextState = 1 // Set to attacking
 						attacker.Target = checkEntityID
 					} else if targetEntity.HasComponent(components.ResourceNodeComponentID) { // Check if entity is gatherable
+						state.NextState = 2 // Set to gathering
 						gather.Target = checkEntityID
 					}
 
@@ -54,15 +57,9 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 
 			// ----------Left click START---------
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-				// Check if player is doing target attach, then turn off that action
-				if attacker.Target != -1 {
-					attacker.Target = -1
-					attacker.IsAttacking = false
-				}
-				if gather.Target != -1 {
-					gather.Target = -1
-					gather.IsGathering = false
-				}
+				// Set state to Idle
+				state.NextState = 0
+
 				// Capture x,y vector clicked on
 				x, y := ebiten.CursorPosition()
 

@@ -3,9 +3,9 @@ package systems
 import (
 	"Brightwells/components"
 	"Brightwells/entities"
-	"time"
 )
 
+// ------------------------------ STATE MACHINE SYSTEMS -------------------------------
 type StateSystem struct{}
 
 func (ss *StateSystem) Update(entitySlice []*entities.Entity) {
@@ -18,7 +18,6 @@ func (ss *StateSystem) Update(entitySlice []*entities.Entity) {
 
 				// Transition to the next state
 				stateComponent.CurrentState = stateComponent.NextState
-				stateComponent.StateChanged = time.Now()
 
 				// Perform any initialization for the new state here
 				println("Entity", entity.ID, "changed state to", stateComponent.CurrentState)
@@ -27,30 +26,12 @@ func (ss *StateSystem) Update(entitySlice []*entities.Entity) {
 			// Handle the current state logic
 			switch stateComponent.CurrentState {
 			case components.StateIdle:
-				ss.handleIdleState(entity)
-			case components.StateMoving:
-				ss.handleMovingState(entity)
+				continue
 			case components.StateAttacking:
-				ss.handleAttackingState(entity)
-			case components.StateDead:
-				ss.handleDeadState(entity)
+				ss.HandleAttacking(entity, entitySlice)
+			case components.StateGather:
+				ss.HandleGathering(entity, entitySlice)
 			}
 		}
 	}
-}
-
-func (ss *StateSystem) handleIdleState(entity *entities.Entity) {
-	// Idle state logic here
-}
-
-func (ss *StateSystem) handleMovingState(entity *entities.Entity) {
-	// Moving state logic here
-}
-
-func (ss *StateSystem) handleAttackingState(entity *entities.Entity) {
-	// Attacking state logic here
-}
-
-func (ss *StateSystem) handleDeadState(entity *entities.Entity) {
-	// Dead state logic here
 }

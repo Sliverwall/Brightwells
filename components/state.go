@@ -1,27 +1,16 @@
 package components
 
-import (
-	"time"
-)
-
 // Define possible states
 const (
-	StateIdle      = "Idle"
-	StateMoving    = "Moving"
-	StateAttacking = "Attacking"
-	StateDead      = "Dead"
+	StateIdle      = 0
+	StateAttacking = 1
+	StateGather    = 2
 )
 
-type StateComponent struct {
-	CurrentState string
-	NextState    string
-	StateChanged time.Time
-}
+// StateComponentID is the identifier for the StateComponent
+const StateComponentID = "StateComponent"
 
-func NewStateComponent(initialState string) *StateComponent {
-	return &StateComponent{
-		CurrentState: initialState,
-		NextState:    initialState,
-		StateChanged: time.Now(),
-	}
+type StateComponent struct {
+	CurrentState int
+	NextState    int
 }

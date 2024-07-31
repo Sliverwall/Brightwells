@@ -20,14 +20,13 @@ type Game struct {
 	collisionSystem        *systems.CollisionSystem
 	triggerCollisionSystem *systems.TriggerCollisionSystem
 
+	stateSystem     *systems.StateSystem
 	movementSystem  *systems.MovementSystem
 	drawSystem      *systems.DrawSystem
 	userInputSystem *systems.UserInputSystem
 	deathSystem     systems.DeathSystem
-	damageSystem    *systems.DamageSystem
 	cameraSystem    *systems.CameraSystem
 	tickManager     *systems.TickManager
-	resourceNode    *systems.ResourceNodeSystem
 }
 
 func (g *Game) Update() error {
@@ -46,11 +45,10 @@ func (g *Game) Update() error {
 	if g.tickManager.ShouldUpdate() {
 		// Update systems that should be tick-based
 		g.movementSystem.Update(g.entitySlice)
-		g.damageSystem.Update(g.entitySlice)
 		g.triggerCollisionSystem.Update(g.entitySlice)
 		g.deathSystem.Update(g.entitySlice)
-		// Skill systems
-		g.resourceNode.Update(g.entitySlice)
+		// Update state
+		g.stateSystem.Update(g.entitySlice)
 		// Reload onl yexisting entities
 		g.entitySlice = entities.GetExistEntitySlice(g.entitySlice)
 	}

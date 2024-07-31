@@ -14,6 +14,11 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	// Mark as player
 	entity.AddComponent(components.PlayerComponentID, &components.PlayerComponent{})
 
+	// Give state
+	entity.AddComponent(components.StateComponentID, &components.StateComponent{
+		CurrentState: 0,
+		NextState:    0,
+	})
 	// Have Camera set to player
 	entity.AddComponent(components.CameraComponentID, &components.CameraComponent{
 		X: posX,
@@ -37,8 +42,7 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 
 	// Combat components
 	entity.AddComponent(components.AttackerComponentID, &components.AttackerComponent{
-		IsAttacking: false,
-		Target:      -1,
+		Target: -1,
 	})
 	entity.AddComponent(components.DestinationComponentID, &components.DestinationComponent{X: posX, Y: posY})
 
@@ -53,7 +57,7 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	})
 
 	// Resource components
-	entity.AddComponent(components.GatherComponentID, &components.GatherComponent{IsGathering: false, Target: -1})
+	entity.AddComponent(components.GatherComponentID, &components.GatherComponent{Target: -1})
 
 	return entity
 
