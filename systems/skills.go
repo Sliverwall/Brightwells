@@ -35,7 +35,7 @@ func (ss *StateSystem) HandleGathering(gather *entities.Entity, entitySlice []*e
 							log.Println("Resource depleted...")
 							gatherComponent.Target = -1
 							// Set next state to idle
-							gather.GetComponent(components.StateComponentID).(*components.StateComponent).NextState = 0
+							SetNextState(gather, components.StateIdle)
 							break
 						}
 						roll := rand.Float32()
@@ -48,12 +48,21 @@ func (ss *StateSystem) HandleGathering(gather *entities.Entity, entitySlice []*e
 							gatherComponent.Target = -1
 							// Leave loop
 							// Set next state to idle
-							gather.GetComponent(components.StateComponentID).(*components.StateComponent).NextState = 0
+							SetNextState(gather, components.StateIdle)
 							break
 						}
 					}
 				}
 			}
 		}
+	}
+}
+
+func SetNextState(entity *entities.Entity, state int) {
+	// Set next step
+	if entity.HasComponent(components.StateComponentID) {
+		entity.GetComponent(components.StateComponentID).(*components.StateComponent).NextState = state
+	} else {
+		log.Println(entity.ID, " Has no state")
 	}
 }

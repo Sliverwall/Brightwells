@@ -39,7 +39,7 @@ func (ss *StateSystem) HandleAttacking(attacker *entities.Entity, entitySlice []
 							// Reset attack status for the attacker
 							attackComponent.Target = -1
 							// Set next state to idle
-							attacker.GetComponent(components.StateComponentID).(*components.StateComponent).NextState = 0
+							SetNextState(attacker, components.StateIdle)
 						}
 
 						// Print damage dealt for debugging

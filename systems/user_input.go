@@ -21,7 +21,6 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			// sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
 			camera := entity.GetComponent(components.CameraComponentID).(*components.CameraComponent)
 			destination := entity.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
-			state := entity.GetComponent(components.StateComponentID).(*components.StateComponent)
 			attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
 			gather := entity.GetComponent(components.GatherComponentID).(*components.GatherComponent)
 
@@ -42,10 +41,10 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 					targetEntity := entities.GetEntityByID(entitySlice, checkEntityID)
 					// Set player's target id to entity clicked
 					if targetEntity.HasComponent(components.DamageComponentID) { // Check if entity is attackable
-						state.NextState = 1 // Set to attacking
+						SetNextState(entity, components.StateAttacking)
 						attacker.Target = checkEntityID
 					} else if targetEntity.HasComponent(components.ResourceNodeComponentID) { // Check if entity is gatherable
-						state.NextState = 2 // Set to gathering
+						SetNextState(entity, components.StateGather)
 						gather.Target = checkEntityID
 					}
 
@@ -56,7 +55,7 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			// ----------Left click START---------
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 				// Set state to Idle
-				state.NextState = 0
+				SetNextState(entity, components.StateIdle)
 
 				// Capture x,y vector clicked on
 				x, y := ebiten.CursorPosition()
