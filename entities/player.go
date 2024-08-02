@@ -29,11 +29,19 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	entity.AddComponent(components.PositionComponentID, &components.PositionComponent{
 		TileX: posX,
 		TileY: posY,
+		DesX:  posX,
+		DesY:  posY,
 	})
+
 	entity.AddComponent(components.VelocityComponentID, &components.VelocityComponent{VX: 0, VY: 0})
 	entity.AddComponent(components.CollisionComponentID, &components.CollisionComponent{})
 	entity.AddComponent(components.CollisionBoxID, &components.CollisionBox{})
 
+	// Spawn Point
+	entity.AddComponent(components.SpawnPointComponentID, &components.SpawnPointComponent{
+		TileX: 0,
+		TileY: 0,
+	})
 	// Visual compontents
 	entity.AddComponent(components.SpriteComponentID, &components.SpriteComponent{
 		Image: sprite,
@@ -44,7 +52,6 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	entity.AddComponent(components.AttackerComponentID, &components.AttackerComponent{
 		Target: -1,
 	})
-	entity.AddComponent(components.DestinationComponentID, &components.DestinationComponent{X: posX, Y: posY})
 
 	// Skill compontents
 	entity.AddComponent(components.DamageComponentID, &components.DamageComponent{})

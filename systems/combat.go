@@ -3,6 +3,7 @@ package systems
 import (
 	"Brightwells/components"
 	"Brightwells/entities"
+	"log"
 )
 
 // ------------------------------ DAMAGE SYSTEMS -------------------------------
@@ -17,14 +18,12 @@ func (ss *StateSystem) HandleAttacking(attacker *entities.Entity, entitySlice []
 				if target.ID == targetID && target.HasComponent(components.DamageComponentID) && target.ID != attacker.ID {
 					// Grab desition and position compontent from attacker and target to keep adjusting destination position
 					targetPosition := target.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-					attackerDestination := attacker.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
+					attackerPosition := attacker.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 					// Keep updating attacker position to follow target if both are moving
-					attackerDestination.X, attackerDestination.Y = targetPosition.TileX, targetPosition.TileY
+					attackerPosition.DesX, attackerPosition.DesY = targetPosition.TileX, targetPosition.TileY
 					if IsWithinOneTile(attacker, target) {
 						// Reset attacker's destination tile to current tile after reaching target
-						attackerPosition := attacker.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-
-						attackerDestination.X, attackerDestination.Y = attackerPosition.TileX, attackerPosition.TileY
+						attackerPosition.DesX, attackerPosition.DesY = attackerPosition.TileX, attackerPosition.TileY
 						// Retrieve the SkillsComponent of the target
 						targetSkills := target.GetComponent(components.SkillsComponentID).(*components.SkillsComponent)
 
@@ -33,17 +32,14 @@ func (ss *StateSystem) HandleAttacking(attacker *entities.Entity, entitySlice []
 
 						// Deal damage to the target
 						targetSkills.CurrentHealth -= damage
-
-						// Ensure health does not go below zero
-						if targetSkills.CurrentHealth <= 0 {
-							// Reset attack status for the attacker
-							attackComponent.Target = -1
-							// Set next state to idle
-							SetNextState(attacker, components.StateIdle)
-						}
-
 						// Print damage dealt for debugging
 						println("Entity", attacker.ID, "attacked Entity", target.ID, "for", damage, "damage!")
+					}
+					if IsWithinManyTile(attacker, target, 5) {
+						log.Println("Distance 1000 tiles")
+						// Check if target is far, if so become idle
+						attackComponent.Target = -1
+						SetNextState(attacker, components.StateIdle)
 					}
 				}
 			}
@@ -70,6 +66,19 @@ func UpdateDeath(entitySlice []*entities.Entity) {
 
 			// Add loot system later
 
+			// Check if entity has a spawn point
+			if entity.HasComponent(components.SpawnPointComponentID) {
+				// Set position to spawn positions
+				position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+				spawnPoint := entity.GetComponent(components.SpawnPointComponentID).(*components.SpawnPointComponent)
+
+				position.TileX, position.TileY = spawnPoint.TileX, spawnPoint.TileY
+
+				// Set Destination to spawn point as well
+				position.DesX, position.DesY = spawnPoint.TileX, spawnPoint.TileY
+
+				break // Leave loop before deleting entity
+			}
 			// Kill entity
 			entity.KillEntity()
 

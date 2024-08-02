@@ -12,6 +12,7 @@ func NewTree(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 
 	entity.AddComponent(components.CollisionComponentID, &components.CollisionComponent{})
 	entity.AddComponent(components.CollisionBoxID, &components.CollisionBox{})
+	// Physics components
 	entity.AddComponent(components.PositionComponentID, &components.PositionComponent{
 		TileX: posX,
 		TileY: posY,

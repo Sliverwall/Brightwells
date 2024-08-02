@@ -20,9 +20,9 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 			// Get needed compontents
 			// sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
 			camera := entity.GetComponent(components.CameraComponentID).(*components.CameraComponent)
-			destination := entity.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
 			attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
 			gather := entity.GetComponent(components.GatherComponentID).(*components.GatherComponent)
+			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 
 			// Log for debugging
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) {
@@ -67,9 +67,9 @@ func (uis *UserInputSystem) Update(entitySlice []*entities.Entity) {
 				// Mark destination to move to
 				destX := math.Floor(float64(x) / config.TileSize)
 				destY := math.Floor(float64(y) / config.TileSize)
-				destination.X = math.Floor(destX)
-				destination.Y = math.Floor(destY)
-				log.Print("Clicked tileX,tileY: ", destination.X, destination.Y)
+				position.DesX = math.Floor(destX)
+				position.DesY = math.Floor(destY)
+				log.Print("Clicked tileX,tileY: ", position.DesX, position.DesY)
 			}
 			// ----------Left click END---------
 		}

@@ -68,27 +68,26 @@ func (tcs *TriggerCollisionSystem) Update(entitySlice []*entities.Entity) {
 func UpdateMovement(entitySlice []*entities.Entity) {
 
 	for _, entity := range entitySlice {
-		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.VelocityComponentID) && entity.HasComponent(components.DestinationComponentID) {
+		if entity.HasComponent(components.PositionComponentID) && entity.HasComponent(components.VelocityComponentID) {
 			// Update position based on velocity
 			position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 			velocity := entity.GetComponent(components.VelocityComponentID).(*components.VelocityComponent)
-			destination := entity.GetComponent(components.DestinationComponentID).(*components.DestinationComponent)
 			// Control movement
 			speed := 1.0
 			// Pathfinding
-			if position.TileX < destination.X {
+			if position.TileX < position.DesX {
 				velocity.VX = speed
-			} else if position.TileX > destination.X {
+			} else if position.TileX > position.DesX {
 				velocity.VX = -speed
-			} else if position.TileX == destination.X {
+			} else if position.TileX == position.DesX {
 				velocity.VX = 0
 			}
 			// Y-axis
-			if position.TileY < destination.Y {
+			if position.TileY < position.DesY {
 				velocity.VY = speed
-			} else if position.TileY > destination.Y {
+			} else if position.TileY > position.DesY {
 				velocity.VY = -speed
-			} else if position.TileY == destination.Y {
+			} else if position.TileY == position.DesY {
 				velocity.VY = 0
 			}
 			// Calculate movement for this frame

@@ -14,12 +14,19 @@ func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity
 	entity.AddComponent(components.PositionComponentID, &components.PositionComponent{
 		TileX: posX,
 		TileY: posY,
+		DesX:  posX,
+		DesY:  posY,
+	})
+
+	// Idle Point
+	entity.AddComponent(components.IdlePositionComponentID, &components.IdlePositionComponent{
+		TileX: posX,
+		TileY: posY,
 	})
 	entity.AddComponent(components.VelocityComponentID, &components.VelocityComponent{
 		VX: 0,
 		VY: 0,
 	})
-	entity.AddComponent(components.DestinationComponentID, &components.DestinationComponent{X: posX, Y: posY})
 
 	// Visual components
 	entity.AddComponent(components.SpriteComponentID, &components.SpriteComponent{

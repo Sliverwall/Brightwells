@@ -26,6 +26,11 @@ func (ss *StateSystem) Update(entitySlice []*entities.Entity) {
 			// Handle the current state logic
 			switch stateComponent.CurrentState {
 			case components.StateIdle:
+				if entity.HasComponent(components.IdlePositionComponentID) {
+					idlePosition := entity.GetComponent(components.IdlePositionComponentID).(*components.IdlePositionComponent)
+					position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+					position.DesX, position.DesY = idlePosition.TileX, idlePosition.TileY
+				}
 				continue
 			case components.StateAttacking:
 				ss.HandleAttacking(entity, entitySlice)

@@ -49,3 +49,15 @@ func IsWithinOneTile(entity1, entity2 *entities.Entity) bool {
 	// Check if the entities are within one tile of each other in any direction
 	return deltaX <= 1 && deltaY <= 1
 }
+
+// IsWithinManyTile checks if two entities are within x tile of eachother
+func IsWithinManyTile(entity1, entity2 *entities.Entity, limit float64) bool {
+	position1 := entity1.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+	position2 := entity2.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+
+	deltaX := math.Abs(position1.TileX - position2.TileX)
+	deltaY := math.Abs(position1.TileY - position2.TileY)
+
+	// Check if the entities are within one tile of each other in any direction
+	return deltaX >= limit && deltaY >= limit
+}
