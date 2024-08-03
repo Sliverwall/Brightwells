@@ -9,7 +9,7 @@ import (
 
 // ------------------------------ ResourceNode SYSTEMS -------------------------------
 
-func (ss *StateSystem) HandleGathering(gather *entities.Entity, entitySlice []*entities.Entity) {
+func HandleGathering(gather *entities.Entity, entitySlice []*entities.Entity) {
 	if gather.HasComponent(components.GatherComponentID) {
 		// Gather gather compontent
 		gatherComponent := gather.GetComponent(components.GatherComponentID).(*components.GatherComponent)

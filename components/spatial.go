@@ -21,7 +21,9 @@ type VelocityComponent struct {
 const SpawnPointComponentID = "SpawnPointComponent"
 
 type SpawnPointComponent struct {
-	TileX, TileY float64
+	TileX, TileY     float64
+	RespawnTime      int
+	RespawnTimeCount int
 }
 
 // IdlePositionComponentID is the identifier for the IdlePositionComponent

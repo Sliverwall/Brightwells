@@ -1,6 +1,9 @@
 package entities
 
-import "Brightwells/components"
+import (
+	"Brightwells/components"
+	"log"
+)
 
 type Entity struct {
 	ID          int                    // unique id to query entity by
@@ -47,14 +50,30 @@ func GetEntityByID(entitySlice []*Entity, id int) *Entity {
 	return nil
 }
 
-func GetExistEntitySlice(entitySlice []*Entity) []*Entity {
+func GetExistEntitySlice(entitySlice, deadEntitySlice []*Entity) ([]*Entity, []*Entity) {
 	var existEntitySlice []*Entity
+	var filteredDeadEntitySlice []*Entity
+
+	// Filter entities that exist from entitySlice
 	for _, entity := range entitySlice {
 		if entity.Exist {
 			existEntitySlice = append(existEntitySlice, entity)
+		} else {
+			deadEntitySlice = append(deadEntitySlice, entity)
 		}
 	}
-	return existEntitySlice
+
+	// Filter entities that do not exist from deadEntitySlice
+	for _, entity := range deadEntitySlice {
+		if !entity.Exist {
+			filteredDeadEntitySlice = append(filteredDeadEntitySlice, entity)
+		}
+	}
+
+	// Check and handle respawn conditions
+	existEntitySlice, filteredDeadEntitySlice = EntityRespawn(existEntitySlice, filteredDeadEntitySlice)
+
+	return existEntitySlice, filteredDeadEntitySlice
 }
 
 func GetPlayerEntity(entitySlice []*Entity) *Entity {
@@ -76,4 +95,48 @@ func NewEntityWithComponents(layer int, components ...struct {
 		entity.AddComponent(component.ID, component.Instance)
 	}
 	return entity
+}
+
+// ------------------------------ Respawn -------------------------------
+
+func EntityRespawn(entitySlice, deadEntitySlice []*Entity) ([]*Entity, []*Entity) {
+
+	for _, entity := range deadEntitySlice {
+		log.Println("Entity ID in dead slice: ", entity.ID)
+		// Check if entity has a spawn point
+		if entity.HasComponent(components.SpawnPointComponentID) && !entity.Exist {
+			// Check if respawn timer is up
+			spawnPoint := entity.GetComponent(components.SpawnPointComponentID).(*components.SpawnPointComponent)
+			if spawnPoint.RespawnTime <= spawnPoint.RespawnTimeCount {
+				log.Println("Respawned ", entity.ID)
+				// Set entity back to alive
+				entity.Exist = true
+				// Reset respawn timer
+				spawnPoint.RespawnTimeCount = 0
+
+				// Set position to spawn positions
+				position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+
+				position.TileX, position.TileY = spawnPoint.TileX, spawnPoint.TileY
+
+				// Set Destination to spawn point as well
+				position.DesX, position.DesY = spawnPoint.TileX, spawnPoint.TileY
+
+				// Add entity back to entitySlice
+				entitySlice = append(entitySlice, entity)
+
+			} else {
+				spawnPoint.RespawnTimeCount += 1 // increase
+				log.Println("Spawn counter for ", entity.ID, " ", spawnPoint.RespawnTimeCount)
+			}
+
+			// Return entitySlice
+			return entitySlice, deadEntitySlice
+		} else {
+			// Just return entitySlice
+			return entitySlice, deadEntitySlice
+		}
+
+	}
+	return entitySlice, deadEntitySlice
 }

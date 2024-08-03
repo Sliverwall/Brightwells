@@ -17,6 +17,13 @@ func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity
 		DesX:  posX,
 		DesY:  posY,
 	})
+	// Spawn Point
+	entity.AddComponent(components.SpawnPointComponentID, &components.SpawnPointComponent{
+		TileX:            posX,
+		TileY:            posY,
+		RespawnTime:      10,
+		RespawnTimeCount: 0,
+	})
 
 	// Idle Point
 	entity.AddComponent(components.IdlePositionComponentID, &components.IdlePositionComponent{

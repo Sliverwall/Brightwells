@@ -9,7 +9,7 @@ import (
 // ------------------------------ DAMAGE SYSTEMS -------------------------------
 
 // State for handling attacking.
-func (ss *StateSystem) HandleAttacking(attacker *entities.Entity, entitySlice []*entities.Entity) {
+func HandleAttacking(attacker *entities.Entity, entitySlice []*entities.Entity) {
 	if attacker.HasComponent(components.AttackerComponentID) {
 		attackComponent := attacker.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
 		if attackComponent.Target != -1 {
@@ -48,40 +48,34 @@ func (ss *StateSystem) HandleAttacking(attacker *entities.Entity, entitySlice []
 }
 
 // ------------------------------ DEATH SYSTEMS -------------------------------
-// DeathSystem's update system handles killing entities.
-func UpdateDeath(entitySlice []*entities.Entity) {
-
+// UpdateCheckZeroHP update system handles killing entities if hp set to 0.
+func UpdateCheckZeroHP(entitySlice []*entities.Entity) {
 	for _, entity := range entitySlice {
-		// Skill component required to die, as it holds health stat
-		if !entity.HasComponent(components.SkillsComponentID) {
-			continue
-		}
+		if entity.HasComponent(components.SkillsComponentID) && entity.HasComponent(components.StateComponentID) {
+			skills := entity.GetComponent(components.SkillsComponentID).(*components.SkillsComponent)
 
-		skills := entity.GetComponent(components.SkillsComponentID).(*components.SkillsComponent)
+			// entity has died
+			if skills.CurrentHealth <= 0 {
+				// reset currentHealth back to max
+				skills.CurrentHealth = skills.Health
+				// Add loot system later
 
-		// entity has died
-		if skills.CurrentHealth <= 0 {
-			// reset currentHealth back to max
-			skills.CurrentHealth = skills.Health
-
-			// Add loot system later
-
-			// Check if entity has a spawn point
-			if entity.HasComponent(components.SpawnPointComponentID) {
-				// Set position to spawn positions
-				position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-				spawnPoint := entity.GetComponent(components.SpawnPointComponentID).(*components.SpawnPointComponent)
-
-				position.TileX, position.TileY = spawnPoint.TileX, spawnPoint.TileY
-
-				// Set Destination to spawn point as well
-				position.DesX, position.DesY = spawnPoint.TileX, spawnPoint.TileY
-
-				break // Leave loop before deleting entity
+				// Set state to dead
+				SetNextState(entity, components.StateDead)
 			}
-			// Kill entity
-			entity.KillEntity()
-
 		}
+	}
+}
+
+// Handle Death system handles killing entities.
+func HandleDeath(entity *entities.Entity) {
+	// Add loot system later
+
+	if entity.Exist {
+		// After respawn checks, kill the entity
+		SetNextState(entity, components.StateIdle)
+		entity.KillEntity()
+	} else {
+		log.Println(entity.ID, " is dead")
 	}
 }

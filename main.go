@@ -15,12 +15,12 @@ type Game struct {
 	// game ECS init
 	backgroundTiles []*entities.Entity
 	entitySlice     []*entities.Entity
+	deadEntitySlice []*entities.Entity
 	player          *entities.Entity
 
 	collisionSystem        *systems.CollisionSystem
 	triggerCollisionSystem *systems.TriggerCollisionSystem
 
-	stateSystem     *systems.StateSystem
 	drawSystem      *systems.DrawSystem
 	userInputSystem *systems.UserInputSystem
 	cameraSystem    *systems.CameraSystem
@@ -28,27 +28,21 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
-
-	// Update entites
-
 	// Always update user input for responsiveness
-	g.userInputSystem.Update(g.entitySlice)
-
-	// Get player entity (consider caching this if it doesn't change often)
-	if g.player == nil {
-		g.player = entities.GetPlayerEntity(g.entitySlice)
-	}
+	g.userInputSystem.Update(g.player, g.entitySlice)
 
 	// Check if it's time for a tick update
 	if g.tickManager.ShouldUpdate() {
 		// Update systems that should be tick-based
 		systems.UpdateMovement(g.entitySlice)
 		g.triggerCollisionSystem.Update(g.entitySlice)
-		systems.UpdateDeath(g.entitySlice)
 		// Update state
-		g.stateSystem.Update(g.entitySlice)
-		// Reload onl yexisting entities
-		g.entitySlice = entities.GetExistEntitySlice(g.entitySlice)
+		systems.UpdateState(g.entitySlice)
+		// Check if entities hit 0 hp
+		systems.UpdateCheckZeroHP(g.entitySlice)
+		// Reload only existing entities. Check Respawn system here
+		g.entitySlice, g.deadEntitySlice = entities.GetExistEntitySlice(g.entitySlice, g.deadEntitySlice)
+
 	}
 
 	// Always update camera for smooth following

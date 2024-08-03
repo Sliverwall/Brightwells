@@ -39,8 +39,10 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 
 	// Spawn Point
 	entity.AddComponent(components.SpawnPointComponentID, &components.SpawnPointComponent{
-		TileX: 0,
-		TileY: 0,
+		TileX:            0,
+		TileY:            0,
+		RespawnTime:      20,
+		RespawnTimeCount: 0,
 	})
 	// Visual compontents
 	entity.AddComponent(components.SpriteComponentID, &components.SpriteComponent{

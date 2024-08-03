@@ -8,7 +8,7 @@ import (
 // ------------------------------ STATE MACHINE SYSTEMS -------------------------------
 type StateSystem struct{}
 
-func (ss *StateSystem) Update(entitySlice []*entities.Entity) {
+func UpdateState(entitySlice []*entities.Entity) {
 	for _, entity := range entitySlice {
 		if entity.HasComponent(components.StateComponentID) {
 			stateComponent := entity.GetComponent(components.StateComponentID).(*components.StateComponent)
@@ -33,9 +33,11 @@ func (ss *StateSystem) Update(entitySlice []*entities.Entity) {
 				}
 				continue
 			case components.StateAttacking:
-				ss.HandleAttacking(entity, entitySlice)
+				HandleAttacking(entity, entitySlice)
 			case components.StateGather:
-				ss.HandleGathering(entity, entitySlice)
+				HandleGathering(entity, entitySlice)
+			case components.StateDead:
+				HandleDeath(entity)
 			}
 		}
 	}
