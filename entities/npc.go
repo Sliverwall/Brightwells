@@ -50,7 +50,7 @@ func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity
 	// Give state
 	entity.AddComponent(components.StateComponentID, &components.StateComponent{
 		CurrentState: 0,
-		NextState:    1,
+		NextState:    0,
 	})
 
 	// Set attack response to attack back
