@@ -2,6 +2,8 @@ package systems
 
 import (
 	"Brightwells/data"
+	"fmt"
+	"log"
 	"unicode"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -16,7 +18,7 @@ func NewLoginSystem() *LoginSystem {
 	return &LoginSystem{}
 }
 
-func (ls *LoginSystem) Update() bool {
+func (ls *LoginSystem) Update() (string, bool) {
 	// Capture keyboard input to form the username string
 	ls.handleInput()
 
@@ -27,12 +29,19 @@ func (ls *LoginSystem) Update() bool {
 
 		for _, player := range playerData {
 			if player[2] == ls.username {
-				return true
+				// Take player data then map onto entity table
+				log.Println(player[2], player[3], player[4])
+				x := float64(player[3].(int64))
+				y := float64(player[4].(int64))
+				log.Println(x, ",", y)
+				updateCurrentPlayerData := fmt.Sprintf("UPDATE ENTITY SET x = %f, y = %f WHERE name = 'player'", x, y)
+				data.SQL_exec(updateCurrentPlayerData)
+				return ls.username, true
 			}
 		}
 	}
 
-	return false
+	return ls.username, false
 }
 
 func (ls *LoginSystem) handleInput() {

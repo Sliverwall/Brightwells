@@ -32,14 +32,18 @@ type Game struct {
 	userInputSystem        *systems.UserInputSystem
 	tickManager            *systems.TickManager
 	loginSystem            *systems.LoginSystem
+	username               string
 }
 
 func (g *Game) Update() error {
 	switch g.state {
 	case LoginState:
 		// Update login screen
-		if g.loginSystem.Update() {
+		username, loginStatus := g.loginSystem.Update()
+		if loginStatus {
 			// Transition to game state if login is successful
+			g.username = username
+			g.initializeGameData() // Load game data after login
 			g.state = GameState
 		}
 	case GameState:
@@ -71,11 +75,10 @@ func (g *Game) Update() error {
 			// Perform updates before closing to save game
 			position := g.player.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 			// Save player position
-			savePlayerPositionQuery := fmt.Sprintf("UPDATE Player SET x = %f, y = %f WHERE name = 'peppe'", position.TileX, position.TileY)
-
+			savePlayerPositionQuery := fmt.Sprintf("UPDATE Player SET x = %f, y = %f WHERE name = '%s';", position.TileX, position.TileY, g.username)
+			log.Println(position.TileX, ",", position.TileY)
 			data.SQL_exec(savePlayerPositionQuery)
 		}
-
 	}
 
 	return nil
@@ -104,21 +107,13 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return resolutionWidth, resolutionHeight
 }
 
-func main() {
-	// Take player data then mapp onto entity table
-	playerData := data.SQL_query(`SELECT * FROM Player WHERE name = 'peppe'`)
-	x := float64(playerData[0][3].(int64))
-	y := float64(playerData[0][4].(int64))
-	updateCurrentPlayerData := fmt.Sprintf("UPDATE ENTITY SET x = %f, y = %f WHERE name = 'player'", x, y)
-	data.SQL_exec(updateCurrentPlayerData)
-
+func (g *Game) initializeGameData() {
 	// Load Entity Sprites
 	spriteMap := data.SQL_query(data.Select_all_Sprite)
 	spriteImages := systems.LoadSprites(spriteMap)
 
 	// Load Background map
 	backgroundMap := systems.ReadMap("assets/maps/map_1.csv")
-
 	// Load Entity map
 	entityMap := data.SQL_query(data.Select_all_Entity) // Any non-tile
 
@@ -128,26 +123,27 @@ func main() {
 		EntityMap:     entityMap,
 		SpriteImages:  spriteImages,
 	}
-	backgroundTiles, entitySlice := tileSystem.InitializeTiles()
+	g.backgroundTiles, g.entitySlice = tileSystem.InitializeTiles()
 
-	// Init systems
-	collisionSystem := &systems.CollisionSystem{}
-	triggerCollisionSystem := &systems.TriggerCollisionSystem{
-		CollisionSystem: collisionSystem,
+	// Initialize the player
+	g.player = entities.GetPlayerEntity(g.entitySlice)
+
+	// Initialize game systems
+	g.collisionSystem = &systems.CollisionSystem{}
+	g.triggerCollisionSystem = &systems.TriggerCollisionSystem{
+		CollisionSystem: g.collisionSystem,
 	}
+	g.drawSystem = &systems.DrawSystem{}
+	g.userInputSystem = &systems.UserInputSystem{}
+}
+
+func main() {
 	loginSystem := systems.NewLoginSystem()
 
-	// Load player in
-	player := entities.GetPlayerEntity(entitySlice)
 	game := &Game{
-		state:                  LoginState,
-		player:                 player,
-		backgroundTiles:        backgroundTiles,
-		entitySlice:            entitySlice,
-		triggerCollisionSystem: triggerCollisionSystem,
-		collisionSystem:        collisionSystem,
-		tickManager:            systems.NewTickManager(300 * time.Millisecond),
-		loginSystem:            loginSystem,
+		state:       LoginState,
+		loginSystem: loginSystem,
+		tickManager: systems.NewTickManager(300 * time.Millisecond),
 	}
 
 	ebiten.SetWindowSize(config.WINDOW_WIDTH, config.WINDOW_HEIGHT)
