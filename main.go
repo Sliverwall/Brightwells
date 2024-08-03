@@ -1,10 +1,12 @@
 package main
 
 import (
+	"Brightwells/components"
 	"Brightwells/config"
 	"Brightwells/data"
 	"Brightwells/entities"
 	"Brightwells/systems"
+	"fmt"
 	"image/color"
 	"log"
 	"time"
@@ -66,8 +68,12 @@ func (g *Game) Update() error {
 		// Check if the window is being closed
 		if ebiten.IsWindowBeingClosed() {
 			log.Println("Window close event triggered. Performing cleanup.")
-			// Perform any necessary cleanup before exiting
-			// ...
+			// Perform updates before closing to save game
+			position := g.player.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+			// Save player position
+			savePlayerPositionQuery := fmt.Sprintf("UPDATE Player SET x = %f, y = %f WHERE name = 'peppe'", position.TileX, position.TileY)
+
+			data.SQL_exec(savePlayerPositionQuery)
 		}
 
 	}
@@ -99,6 +105,13 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 }
 
 func main() {
+	// Take player data then mapp onto entity table
+	playerData := data.SQL_query(`SELECT * FROM Player WHERE name = 'peppe'`)
+	x := float64(playerData[0][3].(int64))
+	y := float64(playerData[0][4].(int64))
+	updateCurrentPlayerData := fmt.Sprintf("UPDATE ENTITY SET x = %f, y = %f WHERE name = 'player'", x, y)
+	data.SQL_exec(updateCurrentPlayerData)
+
 	// Load Entity Sprites
 	spriteMap := data.SQL_query(data.Select_all_Sprite)
 	spriteImages := systems.LoadSprites(spriteMap)

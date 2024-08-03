@@ -64,3 +64,23 @@ func SQL_query(query string) [][]interface{} {
 	// Return final list
 	return allEntries
 }
+
+// SQL_exec executes a non-select SQL query such as INSERT, UPDATE, or DELETE.
+func SQL_exec(query string) (sql.Result, error) {
+	// Connect to the database
+	db, err := sql.Open("sqlite", "data/brightwells.db")
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	defer db.Close()
+
+	// Execute the query
+	result, err := db.Exec(query)
+	if err != nil {
+		log.Println("Error executing query:", err)
+		return nil, err
+	}
+
+	return result, nil
+}
