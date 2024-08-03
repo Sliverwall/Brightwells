@@ -57,11 +57,27 @@ func HandleGathering(gather *entities.Entity, entitySlice []*entities.Entity) {
 	}
 }
 
-func SetNextState(entity *entities.Entity, state int) {
-	// Set next step
-	if entity.HasComponent(components.StateComponentID) {
-		entity.GetComponent(components.StateComponentID).(*components.StateComponent).NextState = state
-	} else {
-		log.Println(entity.ID, " Has no state")
+func UpdateResourceTime(entitySlice []*entities.Entity) {
+	for _, entity := range entitySlice {
+		if entity.HasComponent(components.ResourceNodeComponentID) {
+			resourceNode := entity.GetComponent(components.ResourceNodeComponentID).(*components.ResourceNodeComponent)
+			// Check if node is not active before updating time
+			if !resourceNode.Active {
+				// Add +1 to time per tick
+				resourceNode.RespawnTimeCount += 1
+				// DEBUG
+				// log.Println("Resource Node inactive: Timer: ", resourceNode.RespawnTimeCount, "/", resourceNode.RespawnTime)
+
+				// Check if node can respawn
+				if resourceNode.RespawnTimeCount >= resourceNode.RespawnTime {
+					// Reset time countr
+					resourceNode.RespawnTimeCount = 0
+					// Set node to active
+					resourceNode.Active = true
+				}
+
+			}
+
+		}
 	}
 }

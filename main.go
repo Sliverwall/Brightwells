@@ -36,10 +36,12 @@ func (g *Game) Update() error {
 		// Update systems that should be tick-based
 		systems.UpdateMovement(g.entitySlice)
 		g.triggerCollisionSystem.Update(g.entitySlice)
-		// Update state
-		systems.UpdateState(g.entitySlice)
 		// Check if entities hit 0 hp
 		systems.UpdateCheckZeroHP(g.entitySlice)
+		systems.UpdateResourceTime(g.entitySlice)
+
+		// Update state
+		systems.UpdateState(g.entitySlice)
 		// Reload only existing entities. Check Respawn system here
 		g.entitySlice, g.deadEntitySlice = entities.GetExistEntitySlice(g.entitySlice, g.deadEntitySlice)
 

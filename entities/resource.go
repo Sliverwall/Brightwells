@@ -23,10 +23,12 @@ func NewTree(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	})
 	entity.AddComponent(components.CollisionComponentID, &components.CollisionComponent{})
 	entity.AddComponent(components.ResourceNodeComponentID, &components.ResourceNodeComponent{
-		Type:          "Lumbering",
-		SkillsNeeded:  map[string]int{"Lumbering": 1},
-		Active:        true,
-		DrainedChance: 0.10,
+		Type:             "Lumbering",
+		SkillsNeeded:     map[string]int{"Lumbering": 1},
+		Active:           true,
+		DrainedChance:    0.10,
+		RespawnTime:      10,
+		RespawnTimeCount: 0,
 	})
 
 	return entity

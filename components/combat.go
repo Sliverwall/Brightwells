@@ -11,4 +11,5 @@ const DamageComponentID = "DamageComponent"
 
 type DamageComponent struct {
 	// Component to tag unit as damageable
+	AttackerID int // entity ID of thing attacking
 }

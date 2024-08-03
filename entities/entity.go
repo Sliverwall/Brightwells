@@ -2,7 +2,6 @@ package entities
 
 import (
 	"Brightwells/components"
-	"log"
 )
 
 type Entity struct {
@@ -102,13 +101,15 @@ func NewEntityWithComponents(layer int, components ...struct {
 func EntityRespawn(entitySlice, deadEntitySlice []*Entity) ([]*Entity, []*Entity) {
 
 	for _, entity := range deadEntitySlice {
-		log.Println("Entity ID in dead slice: ", entity.ID)
+		// DEBUG
+		// log.Println("Entity ID in dead slice: ", entity.ID)
 		// Check if entity has a spawn point
 		if entity.HasComponent(components.SpawnPointComponentID) && !entity.Exist {
 			// Check if respawn timer is up
 			spawnPoint := entity.GetComponent(components.SpawnPointComponentID).(*components.SpawnPointComponent)
 			if spawnPoint.RespawnTime <= spawnPoint.RespawnTimeCount {
-				log.Println("Respawned ", entity.ID)
+				// DEBUG
+				// log.Println("Respawned ", entity.ID)
 				// Set entity back to alive
 				entity.Exist = true
 				// Reset respawn timer
@@ -127,7 +128,8 @@ func EntityRespawn(entitySlice, deadEntitySlice []*Entity) ([]*Entity, []*Entity
 
 			} else {
 				spawnPoint.RespawnTimeCount += 1 // increase
-				log.Println("Spawn counter for ", entity.ID, " ", spawnPoint.RespawnTimeCount)
+				// DEBUG
+				// log.Println("Spawn counter for ", entity.ID, " ", spawnPoint.RespawnTimeCount)
 			}
 
 			// Return entitySlice

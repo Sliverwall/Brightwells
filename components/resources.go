@@ -11,6 +11,10 @@ type ResourceNodeComponent struct {
 	Active bool
 	// Chance to set non-active
 	DrainedChance float32
+
+	// Respawn Time to return to active
+	RespawnTime      int
+	RespawnTimeCount int
 }
 
 // Tag entity as able to gather

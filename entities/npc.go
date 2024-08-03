@@ -52,14 +52,20 @@ func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity
 		CurrentState: 0,
 		NextState:    1,
 	})
+
+	// Set attack response to attack back
+	entity.AddComponent(components.AttackedResponseComponentID, &components.AttackedResponseComponent{
+		Type: components.AttackBack,
+	})
+
 	entity.AddComponent(components.AttackerComponentID, &components.AttackerComponent{
-		Target: 8001,
+		Target: -1,
 	})
 
 	entity.AddComponent(components.DamageComponentID, &components.DamageComponent{})
 	entity.AddComponent(components.SkillsComponentID, &components.SkillsComponent{
-		CurrentHealth: 15,
-		Health:        15,
+		CurrentHealth: 5,
+		Health:        5,
 		Melee:         5,
 		Defense:       5,
 		Devotion:      5,

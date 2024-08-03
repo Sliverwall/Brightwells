@@ -41,7 +41,7 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	entity.AddComponent(components.SpawnPointComponentID, &components.SpawnPointComponent{
 		TileX:            0,
 		TileY:            0,
-		RespawnTime:      20,
+		RespawnTime:      1,
 		RespawnTimeCount: 0,
 	})
 	// Visual compontents
@@ -58,8 +58,8 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	// Skill compontents
 	entity.AddComponent(components.DamageComponentID, &components.DamageComponent{})
 	entity.AddComponent(components.SkillsComponentID, &components.SkillsComponent{
-		CurrentHealth: 15,
-		Health:        15,
+		CurrentHealth: 10,
+		Health:        10,
 		Melee:         5,
 		Defense:       5,
 		Devotion:      5,

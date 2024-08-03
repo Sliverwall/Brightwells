@@ -3,6 +3,7 @@ package systems
 import (
 	"Brightwells/components"
 	"Brightwells/entities"
+	"log"
 )
 
 // ------------------------------ STATE MACHINE SYSTEMS -------------------------------
@@ -40,5 +41,14 @@ func UpdateState(entitySlice []*entities.Entity) {
 				HandleDeath(entity)
 			}
 		}
+	}
+}
+
+func SetNextState(entity *entities.Entity, state int) {
+	// Set next step
+	if entity.HasComponent(components.StateComponentID) {
+		entity.GetComponent(components.StateComponentID).(*components.StateComponent).NextState = state
+	} else {
+		log.Println(entity.ID, " Has no state")
 	}
 }
