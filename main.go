@@ -23,7 +23,6 @@ type Game struct {
 
 	drawSystem      *systems.DrawSystem
 	userInputSystem *systems.UserInputSystem
-	cameraSystem    *systems.CameraSystem
 	tickManager     *systems.TickManager
 }
 
@@ -48,7 +47,7 @@ func (g *Game) Update() error {
 	}
 
 	// Always update camera for smooth following
-	g.cameraSystem.Update(g.player)
+	systems.UpdateCamera(g.player)
 
 	return nil
 }

@@ -65,15 +65,13 @@ func (ds *DrawSystem) drawEntities(entitySlice []*entities.Entity, screen *ebite
 }
 
 // ------------------------------ CAMERA SYSTEMS -------------------------------
-type CameraSystem struct{}
-
-func (cs *CameraSystem) Update(player *entities.Entity) {
+func UpdateCamera(player *entities.Entity) {
 
 	if player != nil {
 		playerPosition := player.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 		playerCamera := player.GetComponent(components.CameraComponentID).(*components.CameraComponent)
 
-		playerCamera.X = playerPosition.TileX*config.TileSize - float64(config.RESOLUTION_WIDTH)/2
-		playerCamera.Y = playerPosition.TileY*config.TileSize - float64(config.RESOLUTION_HEIGHT)/2
+		playerCamera.X = (playerPosition.TileX*config.TileSize - float64(config.RESOLUTION_WIDTH)/2) + 10 // slight x-axis offset
+		playerCamera.Y = (playerPosition.TileY*config.TileSize - float64(config.RESOLUTION_HEIGHT)/2) + 10
 	}
 }
