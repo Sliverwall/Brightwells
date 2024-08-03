@@ -71,7 +71,7 @@ func UpdateCamera(player *entities.Entity) {
 		playerPosition := player.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 		playerCamera := player.GetComponent(components.CameraComponentID).(*components.CameraComponent)
 
-		playerCamera.X = (playerPosition.TileX*config.TileSize - float64(config.RESOLUTION_WIDTH)/2) + 10 // slight x-axis offset
-		playerCamera.Y = (playerPosition.TileY*config.TileSize - float64(config.RESOLUTION_HEIGHT)/2) + 10
+		playerCamera.X = (playerPosition.TileX*config.TileSize - float64(config.RESOLUTION_WIDTH)/2) + 16 // slight x-axis offset
+		playerCamera.Y = (playerPosition.TileY*config.TileSize - float64(config.RESOLUTION_HEIGHT)/2) + 16
 	}
 }

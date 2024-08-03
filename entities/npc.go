@@ -10,6 +10,11 @@ import (
 func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	entity := NewEntity(layer) // Ensure you have a NewEntity() function that initializes a new Entity.
 
+	// Mark Monster type
+	entity.AddComponent(components.MonsterTypeComponentID, &components.MonsterTypeComponent{
+		Type: components.Human,
+	})
+
 	// Spatial compontents
 	entity.AddComponent(components.PositionComponentID, &components.PositionComponent{
 		TileX: posX,

@@ -14,6 +14,11 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	// Mark as player
 	entity.AddComponent(components.PlayerComponentID, &components.PlayerComponent{})
 
+	// Mark Monster type
+	entity.AddComponent(components.MonsterTypeComponentID, &components.MonsterTypeComponent{
+		Type: components.Human,
+	})
+
 	// Give state
 	entity.AddComponent(components.StateComponentID, &components.StateComponent{
 		CurrentState: 0,
