@@ -6,7 +6,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func NewApple(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
+// --------------- INVENTORY ITEMS -------------------
+
+// --------------- FLOOR ITEMS -------------------
+func FloorApple(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	entity := NewEntity(layer) // Ensure you have a NewEntity() function that initializes a new Entity.
 
 	entity.AddComponent(components.FoodComponentID, &components.FoodComponent{})

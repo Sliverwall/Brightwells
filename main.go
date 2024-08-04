@@ -97,6 +97,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	case GameState:
 		// Draw the background tiles and entities using the draw system
 		g.drawSystem.Update(g.backgroundTiles, g.entitySlice, screen, g.player)
+		// -----------UI ELEMENTS---------
+		// Right click options
+		options := []int{0, 1}
+		systems.DrawRightClickOptions(screen, options, 100, 100)
 	}
 }
 
@@ -134,7 +138,6 @@ func (g *Game) initializeGameData() {
 		CollisionSystem: g.collisionSystem,
 	}
 	g.drawSystem = &systems.DrawSystem{}
-	g.userInputSystem = &systems.UserInputSystem{}
 }
 
 func main() {

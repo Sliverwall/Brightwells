@@ -28,11 +28,10 @@ func (ls *LoginSystem) Update() (string, bool) {
 		playerData := data.SQL_query(data.Select_all_Player)
 
 		for _, player := range playerData {
-			if player[2] == ls.username {
+			if player[1] == ls.username {
 				// Take player data then map onto entity table
-				log.Println(player[2], player[3], player[4])
-				x := float64(player[3].(int64))
-				y := float64(player[4].(int64))
+				x := float64(player[2].(int64))
+				y := float64(player[3].(int64))
 				log.Println(x, ",", y)
 				updateCurrentPlayerData := fmt.Sprintf("UPDATE ENTITY SET x = %f, y = %f WHERE name = 'player'", x, y)
 				data.SQL_exec(updateCurrentPlayerData)

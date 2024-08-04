@@ -46,6 +46,10 @@ func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity
 		X:     0, Y: 0, X1: 16, Y1: 16, // Initial sub-image coordinates
 	})
 
+	entity.AddComponent(components.RightClickComponentID, &components.RightClickComponent{
+		Actions: []int{components.ClickWalkHere, components.ClickAttack},
+	})
+
 	// Collision compontents
 	entity.AddComponent(components.CollisionComponentID, &components.CollisionComponent{})
 	entity.AddComponent(components.CollisionBoxID, &components.CollisionBox{})

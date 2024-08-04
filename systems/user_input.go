@@ -11,17 +11,24 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-type UserInputSystem struct{}
+type UserInputSystem struct {
+}
 
 func (uis *UserInputSystem) Update(entity *entities.Entity, entitySlice []*entities.Entity) {
 	// Get needed compontents
-	// sprite := entity.GetComponent(components.SpriteComponentID).(*components.SpriteComponent)
 	camera := entity.GetComponent(components.CameraComponentID).(*components.CameraComponent)
-	attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
-	gather := entity.GetComponent(components.GatherComponentID).(*components.GatherComponent)
+	// attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
+	// gather := entity.GetComponent(components.GatherComponentID).(*components.GatherComponent)
 	position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+	inventory := entity.GetComponent(components.InventoryComponentID).(*components.InventoryComponent)
 
-	// Log for debugging
+	// ----------I click START---------
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyI) {
+		log.Println(inventory.Items)
+	}
+
+	// ----------RIGHT click START---------
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) {
 		// Get tile data on what was clicked
 		checkX, checkY := ebiten.CursorPosition()
@@ -33,19 +40,21 @@ func (uis *UserInputSystem) Update(entity *entities.Entity, entitySlice []*entit
 		// Use tile data to grab entity ID on targeted tile
 		checkEntityID := CheckTileForEntity(checkTileX, checkTileY, entitySlice)
 
-		// check if there is no entity
+		// Check if there is no entity
 		if checkEntityID != -1 && checkEntityID != entity.ID {
+			// use the id to grab entity data
 			targetEntity := entities.GetEntityByID(entitySlice, checkEntityID)
-			// Set player's target id to entity clicked
-			if targetEntity.HasComponent(components.DamageComponentID) { // Check if entity is attackable
-				SetNextState(entity, components.StateAttacking)
-				attacker.Target = checkEntityID
-			} else if targetEntity.HasComponent(components.ResourceNodeComponentID) { // Check if entity is gatherable
-				SetNextState(entity, components.StateGather)
-				gather.Target = checkEntityID
-			}
 
-			log.Print(checkEntityID)
+			// check if it has right click data
+			if targetEntity.HasComponent(components.RightClickComponentID) {
+				// grab right click data
+				rightClickOptions := targetEntity.GetComponent(components.RightClickComponentID).(*components.RightClickComponent)
+				// Show the context menu at the mouse position
+				log.Println(rightClickOptions.Actions)
+
+				// trigger draw menu
+
+			}
 		}
 	}
 

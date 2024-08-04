@@ -14,6 +14,12 @@ func NewPlayer(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 	// Mark as player
 	entity.AddComponent(components.PlayerComponentID, &components.PlayerComponent{})
 
+	// Inventory
+	entity.AddComponent(components.InventoryComponentID, &components.InventoryComponent{
+		Slots: 30, // number of slots
+		Items: make([]components.ItemComponent, 30),
+	})
+
 	// Mark Monster type
 	entity.AddComponent(components.MonsterTypeComponentID, &components.MonsterTypeComponent{
 		Type: components.Human,

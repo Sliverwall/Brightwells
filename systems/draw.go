@@ -9,6 +9,7 @@ import (
 	"sort"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 // ------------------------------ DRAW SYSTEMS -------------------------------
@@ -73,5 +74,22 @@ func UpdateCamera(player *entities.Entity) {
 
 		playerCamera.X = (playerPosition.TileX*config.TileSize - float64(config.RESOLUTION_WIDTH)/2) + 16 // slight x-axis offset
 		playerCamera.Y = (playerPosition.TileY*config.TileSize - float64(config.RESOLUTION_HEIGHT)/2) + 16
+	}
+}
+
+// ------------------------------ UI SYSTEMS -------------------------------
+
+// DrawRightClickOptions takes an int array of options then draws the right click action menu
+func DrawRightClickOptions(screen *ebiten.Image, options []int, x, y int) {
+	// Draw the text on the screen
+	for _, option := range options {
+		switch option {
+		case 0:
+			msg := "Walk here"
+			ebitenutil.DebugPrintAt(screen, msg, x, y)
+		case 1:
+			msg := "Attack"
+			ebitenutil.DebugPrintAt(screen, msg, x, y)
+		}
 	}
 }

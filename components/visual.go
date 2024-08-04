@@ -34,3 +34,15 @@ type ShapeColorComponent struct {
 	// RGBA units for shape's color
 	R, G, B, A uint8
 }
+
+// enum for right click options
+const (
+	ClickWalkHere = iota
+	ClickAttack
+	ClickGather
+)
+const RightClickComponentID = "RightClickComponentID"
+
+type RightClickComponent struct {
+	Actions []int // Actions like "Walk here", "Attack", "Gather"
+}
