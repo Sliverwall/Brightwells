@@ -11,6 +11,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
+var (
+	RightClickTriggerOptions []int
+	RightClickX, RightClickY int
+)
+
 type UserInputSystem struct {
 }
 
@@ -53,6 +58,8 @@ func (uis *UserInputSystem) Update(entity *entities.Entity, entitySlice []*entit
 				log.Println(rightClickOptions.Actions)
 
 				// trigger draw menu
+				RightClickTriggerOptions = rightClickOptions.Actions
+				RightClickX, RightClickY = checkX-int(camera.X), checkY-int(camera.Y)
 
 			}
 		}

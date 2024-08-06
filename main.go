@@ -99,8 +99,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		g.drawSystem.Update(g.backgroundTiles, g.entitySlice, screen, g.player)
 		// -----------UI ELEMENTS---------
 		// Right click options
-		options := []int{0, 1}
-		systems.DrawRightClickOptions(screen, options, 100, 100)
+		if systems.RightClickTriggerOptions != nil {
+			systems.DrawRightClickOptions(screen, systems.RightClickTriggerOptions, systems.RightClickX, systems.RightClickY)
+		}
 	}
 }
 

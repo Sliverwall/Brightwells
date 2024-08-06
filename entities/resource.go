@@ -17,6 +17,12 @@ func NewTree(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 		TileX: posX,
 		TileY: posY,
 	})
+
+	// Right click
+	entity.AddComponent(components.RightClickComponentID, &components.RightClickComponent{
+		Actions: []int{components.ClickWalkHere, components.ClickGather},
+	})
+
 	entity.AddComponent(components.SpriteComponentID, &components.SpriteComponent{
 		Image: sprite,
 		X:     0, Y: 0, X1: 32, Y1: 32, // Initial sub-image coordinates

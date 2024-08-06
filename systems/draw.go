@@ -81,15 +81,22 @@ func UpdateCamera(player *entities.Entity) {
 
 // DrawRightClickOptions takes an int array of options then draws the right click action menu
 func DrawRightClickOptions(screen *ebiten.Image, options []int, x, y int) {
+
+	indexOffset := 10
+	var msg string
 	// Draw the text on the screen
-	for _, option := range options {
+	for index, option := range options {
 		switch option {
-		case 0:
-			msg := "Walk here"
-			ebitenutil.DebugPrintAt(screen, msg, x, y)
-		case 1:
-			msg := "Attack"
-			ebitenutil.DebugPrintAt(screen, msg, x, y)
+		case components.ClickWalkHere:
+			// Set up draw options
+			msg = "Walk here"
+		case components.ClickAttack:
+			msg = "Attack"
+		case components.ClickGather:
+			msg = "Gather"
+
 		}
+		ebitenutil.DebugPrintAt(screen, msg, x, y+(indexOffset*index))
+
 	}
 }
