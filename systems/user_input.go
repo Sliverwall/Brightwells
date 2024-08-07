@@ -132,40 +132,22 @@ func (uis *UserInputSystem) Update(entity *entities.Entity, entitySlice []*entit
 
 	// ----------NUM KEYS START---------
 
+	// Num keys when right click options are avaiable
 	if RightClickTriggerOptions != nil {
 		// First click option
 		if inpututil.IsKeyJustPressed(ebiten.Key1) {
-			switch RightClickTriggerOptions[0] {
-			case components.StateAttacking:
-				attacker.Target = RightClickCheckEntityID
-				SetNextState(entity, components.StateAttacking)
-			case components.StateGather:
-				gather.Target = RightClickCheckEntityID
-				SetNextState(entity, components.StateGather)
-			}
-			// remove options so print goes away
-			RightClickTriggerOptions = nil
+			// Pass in [0] for first option
+			ActivateRightClick(RightClickTriggerOptions[0],
+				RightClickCheckEntityID,
+				entity, entitySlice,
+				attacker, gather, position)
 		} else if inpututil.IsKeyJustPressed(ebiten.Key2) {
-			switch RightClickTriggerOptions[1] {
-			case components.StateAttacking:
-				attacker.Target = RightClickCheckEntityID
-				SetNextState(entity, components.StateAttacking)
-			case components.StateGather:
-				gather.Target = RightClickCheckEntityID
-				SetNextState(entity, components.StateGather)
-			case components.StateWalkHere:
-				SetNextState(entity, components.StateWalkHere)
-				// use the id to grab entity data
-				targetEntity := entities.GetEntityByID(entitySlice, RightClickCheckEntityID)
-				targetPosition := targetEntity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
-				destX := targetPosition.TileX
-				destY := targetPosition.TileY
-				position.DesX = math.Floor(destX)
-				position.DesY = math.Floor(destY)
-
-			}
-			// remove options so print goes away
-			RightClickTriggerOptions = nil
+			// Pass in [1] for second option
+			ActivateRightClick(RightClickTriggerOptions[1],
+				RightClickCheckEntityID,
+				entity, entitySlice,
+				attacker, gather, position)
 		}
 	}
+	// ----------NUM KEYS END---------
 }

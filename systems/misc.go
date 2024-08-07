@@ -61,3 +61,27 @@ func IsWithinManyTile(entity1, entity2 *entities.Entity, limit float64) bool {
 	// Check if the entities are within one tile of each other in any direction
 	return deltaX >= limit && deltaY >= limit
 }
+
+// ActivateRightClick handles right click input action for num pad user input
+func ActivateRightClick(option, checkID int, entity *entities.Entity, entitySlice []*entities.Entity, attaker *components.AttackerComponent, gather *components.GatherComponent, position *components.PositionComponent) {
+	switch option {
+	case components.StateAttacking:
+		attaker.Target = checkID
+		SetNextState(entity, components.StateAttacking)
+	case components.StateGather:
+		gather.Target = checkID
+		SetNextState(entity, components.StateGather)
+	case components.StateWalkHere:
+		SetNextState(entity, components.StateWalkHere)
+		// use the id to grab entity data
+		targetEntity := entities.GetEntityByID(entitySlice, checkID)
+		targetPosition := targetEntity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
+
+		// Set desitination to the target
+		position.DesX = targetPosition.TileX
+		position.DesY = targetPosition.TileY
+
+	}
+	// remove options so print goes away
+	RightClickTriggerOptions = nil
+}
