@@ -6,6 +6,7 @@ const (
 	StateAttacking
 	StateGather
 	StateDead
+	StateWalkHere
 )
 
 // StateComponentID is the identifier for the StateComponent

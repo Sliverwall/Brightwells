@@ -12,8 +12,11 @@ import (
 )
 
 var (
+	// Trigger variables for passing information to main
 	RightClickTriggerOptions []int
-	RightClickX, RightClickY int
+	RightClickX, RightClickY []int
+	// Index offset for action text
+	indexOffset int = 10
 )
 
 type UserInputSystem struct {
@@ -22,8 +25,6 @@ type UserInputSystem struct {
 func (uis *UserInputSystem) Update(entity *entities.Entity, entitySlice []*entities.Entity) {
 	// Get needed compontents
 	camera := entity.GetComponent(components.CameraComponentID).(*components.CameraComponent)
-	// attacker := entity.GetComponent(components.AttackerComponentID).(*components.AttackerComponent)
-	// gather := entity.GetComponent(components.GatherComponentID).(*components.GatherComponent)
 	position := entity.GetComponent(components.PositionComponentID).(*components.PositionComponent)
 	inventory := entity.GetComponent(components.InventoryComponentID).(*components.InventoryComponent)
 
@@ -59,7 +60,11 @@ func (uis *UserInputSystem) Update(entity *entities.Entity, entitySlice []*entit
 
 				// trigger draw menu
 				RightClickTriggerOptions = rightClickOptions.Actions
-				RightClickX, RightClickY = checkX-int(camera.X), checkY-int(camera.Y)
+
+				for index := range RightClickTriggerOptions {
+					RightClickX = append(RightClickX, checkX-int(camera.X))                       // Index and X position
+					RightClickY = append(RightClickY, (checkY-int(camera.Y))+(index*indexOffset)) // Index offset to move action down 1
+				}
 
 			}
 		}
@@ -67,19 +72,30 @@ func (uis *UserInputSystem) Update(entity *entities.Entity, entitySlice []*entit
 
 	// ----------Left click START---------
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-		// Set state to Idle
-		SetNextState(entity, components.StateIdle)
-
 		// Capture x,y vector clicked on
 		x, y := ebiten.CursorPosition()
+
+		// Check if right click option is not nill
+		if RightClickTriggerOptions != nil {
+
+			// Set right click options to nil
+			RightClickTriggerOptions = nil
+		}
+
+		// Set state to Walk Here
+		SetNextState(entity, components.StateWalkHere)
 
 		// Adjust for camera offset
 		x += int(camera.X)
 		y += int(camera.Y)
 
+		// Check the tile for entities
+		checkTileX := math.Floor(float64(x) / config.TileSize)
+		checkTileY := math.Floor(float64(y) / config.TileSize)
+
 		// Mark destination to move to
-		destX := math.Floor(float64(x) / config.TileSize)
-		destY := math.Floor(float64(y) / config.TileSize)
+		destX := checkTileX
+		destY := checkTileY
 		position.DesX = math.Floor(destX)
 		position.DesY = math.Floor(destY)
 		log.Print("Clicked tileX,tileY: ", position.DesX, position.DesY)

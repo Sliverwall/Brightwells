@@ -39,6 +39,8 @@ func UpdateState(entitySlice []*entities.Entity) {
 				HandleGathering(entity, entitySlice)
 			case components.StateDead:
 				HandleDeath(entity)
+			case components.StateWalkHere:
+				continue
 			}
 		}
 	}
