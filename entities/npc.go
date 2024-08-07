@@ -47,7 +47,7 @@ func NewMonsterGirl(posX, posY float64, sprite *ebiten.Image, layer int) *Entity
 	})
 
 	entity.AddComponent(components.RightClickComponentID, &components.RightClickComponent{
-		Actions: []int{components.ClickWalkHere, components.ClickAttack},
+		Actions: []int{components.StateAttacking, components.StateWalkHere},
 	})
 
 	// Collision compontents

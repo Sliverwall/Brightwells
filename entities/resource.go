@@ -20,7 +20,7 @@ func NewTree(posX, posY float64, sprite *ebiten.Image, layer int) *Entity {
 
 	// Right click
 	entity.AddComponent(components.RightClickComponentID, &components.RightClickComponent{
-		Actions: []int{components.ClickWalkHere, components.ClickGather},
+		Actions: []int{components.StateGather, components.StateWalkHere},
 	})
 
 	entity.AddComponent(components.SpriteComponentID, &components.SpriteComponent{

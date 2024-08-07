@@ -7,6 +7,7 @@ import (
 	"image"
 	"math"
 	"sort"
+	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -83,19 +84,22 @@ func UpdateCamera(player *entities.Entity) {
 func DrawRightClickOptions(screen *ebiten.Image, options, xArray, yArray []int) {
 
 	var msg string
+	var finalMsg string
 	// Draw the text on the screen
 	for index, option := range options {
 		switch option {
-		case components.ClickWalkHere:
+		case components.StateWalkHere:
 			// Set up draw options
 			msg = "Walk here"
-		case components.ClickAttack:
+		case components.StateAttacking:
 			msg = "Attack"
-		case components.ClickGather:
+		case components.StateGather:
 			msg = "Gather"
 
 		}
-		ebitenutil.DebugPrintAt(screen, msg, xArray[index], yArray[index])
+		pressCommand := strconv.Itoa(index + 1)
+		finalMsg = msg + " (" + pressCommand + ")"
+		ebitenutil.DebugPrintAt(screen, finalMsg, xArray[index], yArray[index])
 
 	}
 }
